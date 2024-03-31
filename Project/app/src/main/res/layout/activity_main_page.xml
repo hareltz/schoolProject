@@ -39,23 +39,24 @@
                         android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/HiUsername" />
+                        app:layout_constraintTop_toBottomOf="@+id/hi_username_text" />
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/profilePicture"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="32dp"
                         android:layout_marginEnd="32dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.985"
-                        app:layout_constraintStart_toEndOf="@+id/HiUsername"
+                        app:layout_constraintStart_toEndOf="@+id/hi_username_text"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/roundedImageView"
                         app:srcCompat="@drawable/user_1"
-                        tools:srcCompat="@drawable/user_1" />
+                        tools:srcCompat="@drawable/user_2" />
 
                     <TextView
-                        android:id="@+id/HiUsername"
+                        android:id="@+id/hi_username_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="42dp"
@@ -90,7 +91,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="190dp"
@@ -100,6 +101,85 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <TextView
+                    android:id="@+id/favourites_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Favourites"
+                    android:textStyle="bold"
+                    tools:ignore="DuplicateIds,MissingConstraints" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favourites_list"
+                    android:layout_width="340dp"
+                    android:layout_height="135dp"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/appointment_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Appointment"
+                    android:textStyle="bold"
+                    tools:ignore="MissingConstraints" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/appointment_list"
+                    android:layout_width="340dp"
+                    android:layout_height="135dp"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+                <TextView
+                    android:id="@+id/popular_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Popular"
+                    android:textStyle="bold"
+                    tools:ignore="DuplicateIds,MissingConstraints" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/popular_list"
+                    android:layout_width="340dp"
+                    android:layout_height="135dp"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
