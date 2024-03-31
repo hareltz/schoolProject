@@ -12,12 +12,12 @@
         android:layout_width="420dp"
         android:layout_height="225dp"
         android:gravity="center"
-        android:text="logo.png"
+        android:text="BARBARA"
         android:textColor="@color/white"
         android:textSize="50dp"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="-7dp"
-        tools:layout_editor_absoluteY="-1dp" />
+        tools:layout_editor_absoluteX="-5dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,37 +40,40 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="app name"
+            android:text="BARBARA"
             android:textSize="45dp" />
 
         <EditText
             android:id="@+id/UsernameInput"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_gravity="center"
 
+            android:layout_marginTop="70dp"
             android:layout_marginEnd="15dp"
             android:ems="10"
             android:gravity="center|left|center_vertical"
+            android:hint="Enter Username"
             android:inputType="text"
             android:paddingTop="15dp"
             android:paddingEnd="15dp"
-            android:hint="Enter Username"
             android:textColor="#6B1CAA"
             tools:layout_marginStart="15dp" />
 
         <EditText
             android:id="@+id/PasswordInput"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
 
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:ems="10"
             android:gravity="center|left"
-            android:inputType="textPassword"
-            android:paddingEnd="15dp"
             android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:paddingEnd="15dp"
             android:textColor="#6B1CAA"
             tools:ignore="MissingConstraints"
             tools:layout_marginStart="15dp"
@@ -78,18 +81,19 @@
 
         <TextView
             android:id="@+id/LoginBt"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/default_bt"
             android:gravity="center"
+            android:onClick="LoginBT"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="Login"
             android:textColor="@color/white"
             android:textSize="35dp"
-            android:onClick="LoginBT"
             tools:layout_marginLeft="15dp" />
 
         <LinearLayout
@@ -115,9 +119,10 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="70dp"
                 android:layout_weight="1"
+                android:onClick="ToRegister"
                 android:text="Register here!"
                 android:textColor="#6B1CAA"
-                android:onClick="ToRegister"/>
+                tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
 

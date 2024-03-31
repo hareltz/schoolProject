@@ -36,7 +36,7 @@ public class login extends AppCompatActivity {
     {
         Log.println(Log.DEBUG,"debug", "username: " + username.getText() + " | password: " + password.getText());
 
-        Intent intent = new Intent(this, register.class); // run the main class
+        Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
     }

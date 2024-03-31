@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon" />
+                android:src="@drawable/settings_icon" />
 
             <ImageView
                 android:id="@+id/b1_on"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon"
+                android:src="@drawable/settings_icon"
                 android:visibility="gone"/>
 
             <TextView
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon" />
+                android:src="@drawable/settings_icon" />
 
             <ImageView
                 android:id="@+id/b2_on"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon"
+                android:src="@drawable/settings_icon"
                 android:visibility="gone"/>
 
             <TextView
@@ -105,24 +105,13 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/CartBottom"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_margin="10dp"
-                android:layout_gravity="center"
-                android:background="@drawable/settingsIcon"
-                android:src="@drawable/settingsIcon"
-                android:scaleType="fitCenter"
-                android:padding="15dp"/>
-
-            <ImageButton
                 android:id="@+id/checkoutBottom"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_margin="10dp"
                 android:layout_gravity="center"
-                android:background="@drawable/settingsIcon"
-                android:src="@drawable/settingsIcon"
+                android:background="@drawable/settings_icon"
+                android:src="@drawable/settings_icon"
                 android:scaleType="fitCenter"
                 android:padding="15dp"
                 android:visibility="gone"/>
@@ -142,7 +131,7 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon" />
+                android:src="@drawable/settings_icon" />
 
             <ImageView
                 android:id="@+id/b3_on"
@@ -150,7 +139,7 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon"
+                android:src="@drawable/settings_icon"
                 android:visibility="gone"/>
 
             <TextView
@@ -179,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon"
+                android:src="@drawable/settings_icon"
                 />
 
             <ImageView
@@ -188,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:src="@drawable/settingsIcon"
+                android:src="@drawable/settings_icon"
                 android:visibility="gone"/>
 
             <TextView
