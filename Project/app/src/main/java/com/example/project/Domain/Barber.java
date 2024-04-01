@@ -2,9 +2,9 @@ package com.example.project.Domain;
 
 public class Barber
 {
-    protected String name;
-    protected String phoneNumber;
-    protected String picAddress;
+    private String name;
+    private String phoneNumber;
+    private String picAddress;
 
     public Barber(String name, String phoneNumber, String picAddress) {
         this.name = name;

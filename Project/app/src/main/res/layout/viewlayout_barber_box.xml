@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="100dp"
     android:layout_height="100dp"
-    android:background="@drawable/curve_gradient_layout">
+    android:background="@drawable/curve_hazy_white"
+    android:clickable="true">
 
     <!-- Image that stay round -->
     <com.google.android.material.imageview.ShapeableImageView

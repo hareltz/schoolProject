@@ -23,8 +23,8 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration
         super.getItemOffsets(outRect, view, parent, state);
 
         // Set spacing for left, right, and bottom of each item
-        outRect.left = spacing;
-        outRect.right = spacing;
+        //outRect.left = spacing;
+        outRect.right = spacing*2;
         //outRect.bottom = spacing;
 
         // Add top margin only for the first item to avoid double space between items

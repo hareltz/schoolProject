@@ -91,12 +91,13 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- android:background="@drawable/curve_white_layout" -->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="190dp"
         android:layout_marginBottom="-100dp"
-        android:background="@drawable/curve_white_layout"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -110,7 +111,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -121,6 +121,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:text="Appointment"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="MissingConstraints" />
 
@@ -136,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
@@ -147,13 +148,14 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:text="Favourites"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="DuplicateIds,MissingConstraints" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favourites_list"
                     android:layout_width="340dp"
-                    android:layout_height="135dp"
+                    android:layout_height="100dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 
@@ -161,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
@@ -172,13 +174,14 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:text="Popular"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="DuplicateIds,MissingConstraints" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/popular_list"
                     android:layout_width="340dp"
-                    android:layout_height="135dp"
+                    android:layout_height="100dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 
