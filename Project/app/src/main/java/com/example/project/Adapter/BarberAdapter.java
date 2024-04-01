@@ -1,6 +1,5 @@
-package com.example.project;
+package com.example.project.Adapter;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -11,15 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.imageview.ShapeableImageView;
+import com.example.project.Domain.Barber;
+import com.example.project.R;
 
 import java.util.ArrayList;
 
 public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder>
 {
     ArrayList<Barber> barbers;
-    Context context;
-
 
     public BarberAdapter(ArrayList<Barber> barbers) {
         this.barbers = barbers;
@@ -29,7 +27,6 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
     @Override
     public BarberAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_barber_box, parent, false);
-        context = parent.getContext();
         return new Viewholder(view);
     }
 
@@ -47,7 +44,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
         return barbers.size();
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder
+    public static class Viewholder extends RecyclerView.ViewHolder
     {
         TextView Name, PhoneNumber;
         com.google.android.material.imageview.ShapeableImageView pic;

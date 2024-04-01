@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.project.R;
 
 public class login extends AppCompatActivity {
 

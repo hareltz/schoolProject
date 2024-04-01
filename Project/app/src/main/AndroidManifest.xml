@@ -19,19 +19,19 @@
             android:exported="false"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".menu_bar"
+            android:name=".Activity.menu_bar"
             android:exported="false" />
         <activity
-            android:name=".MainPage"
+            android:name=".Activity.MainPage"
             android:exported="false" />
         <activity
-            android:name=".login"
+            android:name=".Activity.login"
             android:exported="false" />
         <activity
-            android:name=".register"
+            android:name=".Activity.register"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

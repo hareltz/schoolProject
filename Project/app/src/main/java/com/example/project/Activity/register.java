@@ -1,10 +1,12 @@
-package com.example.project;
+package com.example.project.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.project.R;
 
 public class register extends AppCompatActivity {
 

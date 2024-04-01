@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_drawable"
-    tools:context=".MainPage">
+    tools:context=".Activity.MainPage">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -106,31 +106,6 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-                <TextView
-                    android:id="@+id/favourites_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Favourites"
-                    android:textStyle="bold"
-                    tools:ignore="DuplicateIds,MissingConstraints" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/favourites_list"
-                    android:layout_width="340dp"
-                    android:layout_height="135dp"
-                    tools:ignore="MissingConstraints" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -144,12 +119,39 @@
                     android:id="@+id/appointment_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
                     android:text="Appointment"
                     android:textStyle="bold"
                     tools:ignore="MissingConstraints" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/appointment_list"
+                    android:layout_width="340dp"
+                    android:layout_height="135dp"
+                    tools:ignore="MissingConstraints" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <TextView
+                    android:id="@+id/favourites_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="Favourites"
+                    android:textStyle="bold"
+                    tools:ignore="DuplicateIds,MissingConstraints" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favourites_list"
                     android:layout_width="340dp"
                     android:layout_height="135dp"
                     tools:ignore="MissingConstraints" />
@@ -168,6 +170,7 @@
                     android:id="@+id/popular_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
                     android:text="Popular"
                     android:textStyle="bold"
                     tools:ignore="DuplicateIds,MissingConstraints" />
