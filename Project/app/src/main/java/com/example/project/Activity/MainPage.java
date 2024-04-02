@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.example.project.Adapter.AppointmentAdapter;
 import com.example.project.Adapter.BarberAdapter;
-import com.example.project.Decoration.ItemSpacingDecoration;
+import com.example.project.Decoration.ItemSpacingDecorationRight;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.example.project.R;
@@ -61,7 +61,7 @@ public class MainPage extends AppCompatActivity {
         Log.d("MainActivity", "This is a debug message");
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        this.appointments.addItemDecoration(new ItemSpacingDecoration(this, spacingInPixels));
+        this.appointments.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
         Log.d("MainActivity", "This is a debug message");
     }
 
@@ -83,7 +83,7 @@ public class MainPage extends AppCompatActivity {
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        favourites.addItemDecoration(new ItemSpacingDecoration(this, spacingInPixels));
+        favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
     private void initPopular()
@@ -104,7 +104,7 @@ public class MainPage extends AppCompatActivity {
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        populars.addItemDecoration(new ItemSpacingDecoration(this, spacingInPixels));
+        populars.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
 
