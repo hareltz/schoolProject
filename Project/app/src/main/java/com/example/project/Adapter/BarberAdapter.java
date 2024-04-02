@@ -1,7 +1,5 @@
 package com.example.project.Adapter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
 import com.example.project.R;
 
@@ -35,8 +34,9 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
         holder.Name.setText(barbers.get(position).getName());
         holder.PhoneNumber.setText(barbers.get(position).getPhoneNumber());
 
-        Bitmap bitmap = BitmapFactory.decodeFile(barbers.get(position).getPicAddress());
-        holder.pic.setImageBitmap(bitmap);
+        Glide.with(holder.itemView.getContext())
+                .load(barbers.get(position).getPicAddress())
+                .into(holder.Pic);
     }
 
     @Override
@@ -47,14 +47,14 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
     public static class Viewholder extends RecyclerView.ViewHolder
     {
         TextView Name, PhoneNumber;
-        com.google.android.material.imageview.ShapeableImageView pic;
+        com.google.android.material.imageview.ShapeableImageView Pic;
 
         public Viewholder(@NonNull View itemView)
         {
             super(itemView);
             Name = itemView.findViewById((R.id.barber_name));
             PhoneNumber = itemView.findViewById(R.id.barbers_phone);
-            pic = itemView.findViewById(R.id.barbers_pic);
+            Pic = itemView.findViewById(R.id.barbers_pic);
 
         }
     }

@@ -2,78 +2,85 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
+    android:layout_width="340dp"
     android:layout_height="135dp"
     android:background="@drawable/curve_hazy_white">
 
     <!-- Image that stay round -->
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/appointment_barber_pic"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/search_results_barber_pic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.120000005"
+        app:layout_constraintVertical_bias="1.0"
         app:shapeAppearanceOverlay="@style/roundedImageView"
         app:srcCompat="@drawable/user_1" />
 
     <TextView
-        android:id="@+id/appointment_barbers_name"
+        android:id="@+id/search_results_barbers_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:text="harel tzanani"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/appointment_barber_pic"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/search_results_barber_pic"
+        app:layout_constraintStart_toEndOf="@+id/search_results_barber_pic"
+        app:layout_constraintTop_toTopOf="@+id/search_results_barber_pic" />
 
     <TextView
-        android:id="@+id/appointment_barbers_phone"
+        android:id="@+id/search_results_barbers_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="050-7870003"
         android:textColor="#CCFFFFFF"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textStyle="bold"
 
-        app:layout_constraintStart_toStartOf="@+id/appointment_barbers_name"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_barbers_name" />
+        app:layout_constraintStart_toStartOf="@+id/search_results_barbers_name"
+        app:layout_constraintTop_toBottomOf="@+id/search_results_barbers_name" />
 
     <TextView
-        android:id="@+id/appointment_time"
+        android:id="@+id/search_results_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="14:30"
+        android:text="Yish'i 10"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.186"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.824"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/appointment_date"
+        android:id="@+id/search_results_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="01/04/2024"
+        android:layout_marginTop="20dp"
+        android:text="50$"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/appointment_time"
-        app:layout_constraintHorizontal_bias="0.506"
-        app:layout_constraintStart_toStartOf="@+id/appointment_time"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.824"
         tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

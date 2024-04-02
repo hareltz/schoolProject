@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="16dp"
                     android:paddingBottom="5dp"
-                    android:text="Search Results <number>"
+                    android:text="Search Results number"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="MissingConstraints" />

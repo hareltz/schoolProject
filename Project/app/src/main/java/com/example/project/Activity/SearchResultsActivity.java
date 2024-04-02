@@ -2,25 +2,52 @@ package com.example.project.Activity;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project.Adapter.SearchResultsAdapter;
+import com.example.project.Decoration.ItemSpacingDecorationBottom;
+import com.example.project.Domain.Barber;
 import com.example.project.R;
+
+import java.util.ArrayList;
 
 public class SearchResultsActivity extends AppCompatActivity {
 
+    private RecyclerView search_results;
+    private RecyclerView.Adapter search_results_add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search_results);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        initSearchResults();
     }
+
+    private void initSearchResults()
+    {
+        // replace this with data from the db
+        ArrayList<Barber> searchResults = new ArrayList<>();
+
+        searchResults.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+
+        // Initialize RecyclerView and set layout manager
+        this.search_results = findViewById(R.id.search_results_list);
+        this.search_results.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        // Create and set adapter
+        search_results_add = new SearchResultsAdapter(searchResults);
+        this.search_results.setAdapter(search_results_add);
+
+        // Apply ItemSpacingDecoration to add spacing between items
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        this.search_results.addItemDecoration(new ItemSpacingDecorationBottom(this, spacingInPixels));
+    }
+
 }

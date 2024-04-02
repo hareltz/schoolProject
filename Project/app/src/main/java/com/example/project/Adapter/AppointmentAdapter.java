@@ -1,8 +1,5 @@
 package com.example.project.Adapter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.project.Domain.Appointment;
 import com.example.project.R;
 
@@ -38,8 +36,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.Date.setText(appointments.get(position).getDate());
         holder.Time.setText(appointments.get(position).getTime());
 
-        Bitmap bitmap = BitmapFactory.decodeFile(appointments.get(position).getBarber().getPicAddress());
-        holder.Pic.setImageBitmap(bitmap);
+        Glide.with(holder.itemView.getContext())
+                .load(appointments.get(position).getBarber().getPicAddress())
+                .into(holder.Pic);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.example.project.Activity;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
 
 import com.example.project.Adapter.AppointmentAdapter;
 import com.example.project.Adapter.BarberAdapter;
@@ -39,39 +39,38 @@ public class MainPage extends AppCompatActivity {
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        Barber tempBarber = new Barber("harel", "050-7870003", "@drawable/user_2");
+        Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1);
         appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
 
-        tempBarber = new Barber("harel2", "050-7870003", "@drawable/user_2");
+        tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1);
         appointments.add(new Appointment(tempBarber, "02/04/2024", "12:00"));
 
-        tempBarber = new Barber("harel3", "050-7870003", "@drawable/user_2");
+        tempBarber = new Barber("harel3", "050-7870003", R.drawable.user_1);
         appointments.add(new Appointment(tempBarber, "03/04/2024", "16:00"));
 
-        tempBarber = new Barber("harel4", "050-7870003", "@drawable/user_2");
+        tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1);
         appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));
         Log.d("MainActivity", "This is a debug message");
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        Log.d("MainActivity", "This is a debug message");
+
         // Create and set adapter
         appointments_add = new AppointmentAdapter(appointments);
         this.appointments.setAdapter(appointments_add);
-        Log.d("MainActivity", "This is a debug message");
+
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         this.appointments.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
-        Log.d("MainActivity", "This is a debug message");
     }
 
     private void initFavourites()
     {
         ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel2", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel3", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel4", "050-7870003", "@drawable/user_2"));
+        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1));
 
         // Initialize RecyclerView and set layout manager
         favourites = findViewById(R.id.favourites_list);
@@ -89,10 +88,10 @@ public class MainPage extends AppCompatActivity {
     private void initPopular()
     {
         ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel2", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel3", "050-7870003", "@drawable/user_2"));
-        barbers.add(new Barber("harel4", "050-7870003", "@drawable/user_2"));
+        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1));
 
         // Initialize RecyclerView and set layout manager
         populars = findViewById(R.id.popular_list);
