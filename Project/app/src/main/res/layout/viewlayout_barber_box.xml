@@ -5,7 +5,8 @@
     android:layout_width="100dp"
     android:layout_height="100dp"
     android:background="@drawable/curve_hazy_white"
-    android:clickable="true">
+    android:clickable="true"
+    android:onClick="openBarberProfile">
 
     <!-- Image that stay round -->
     <com.google.android.material.imageview.ShapeableImageView

@@ -36,7 +36,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
 
         Glide.with(holder.itemView.getContext())
                 .load(barbers.get(position).getPicAddress())
-                .into(holder.Pic);
+                .into(holder.pic);
     }
 
     @Override
@@ -47,14 +47,14 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
     public static class Viewholder extends RecyclerView.ViewHolder
     {
         TextView Name, PhoneNumber;
-        com.google.android.material.imageview.ShapeableImageView Pic;
+        com.google.android.material.imageview.ShapeableImageView pic;
 
         public Viewholder(@NonNull View itemView)
         {
             super(itemView);
             Name = itemView.findViewById((R.id.barber_name));
             PhoneNumber = itemView.findViewById(R.id.barbers_phone);
-            Pic = itemView.findViewById(R.id.barbers_pic);
+            pic = itemView.findViewById(R.id.barbers_pic);
 
         }
     }
