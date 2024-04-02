@@ -1,7 +1,12 @@
 package com.example.project.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +25,7 @@ public class MainPage extends AppCompatActivity {
 
     private RecyclerView appointments,favourites, populars;
     private RecyclerView.Adapter appointments_add,favourites_add, populars_add;
+    EditText searchBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,10 +34,33 @@ public class MainPage extends AppCompatActivity {
         appointments = findViewById(R.id.appointment_list);
         favourites = findViewById(R.id.favourites_list);
         populars = findViewById(R.id.popular_list);
+        searchBar = findViewById(R.id.search_bar);
 
         initAppointment();
         initFavourites();
         initPopular();
+
+        // Set the OnEditorActionListener inside onCreate method
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            // function that detects when the user press enter on the search_bar EditText
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    EnterSearchResults();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void EnterSearchResults()
+    {
+        Intent intent = new Intent(this, SearchResultsActivity.class); // run the main class
+        Log.d("debug", searchBar.getText().toString());
+        intent.putExtra("searchKey", searchBar.getText().toString()); // Example: sending a string value
+        startActivity(intent);
+        finish();
     }
 
     private void initAppointment()

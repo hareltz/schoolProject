@@ -47,10 +47,12 @@
                     android:layout_width="39dp"
                     android:layout_height="31dp"
                     android:layout_marginEnd="15dp"
+                    android:onClick="ArrowBack"
                     android:src="@drawable/back"
                     app:layout_constraintBottom_toBottomOf="@+id/search_bar"
                     app:layout_constraintEnd_toStartOf="@+id/search_bar"
-                    app:layout_constraintTop_toTopOf="@+id/search_bar" />
+                    app:layout_constraintTop_toTopOf="@+id/search_bar"
+                    tools:ignore="TouchTargetSizeCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

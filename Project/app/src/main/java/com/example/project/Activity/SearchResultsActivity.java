@@ -1,6 +1,9 @@
 package com.example.project.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,12 +20,18 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
+    private TextView search_results_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
 
         initSearchResults();
+
+        search_results_text = findViewById(R.id.search_results_text);
+
+        /*Intent intent = getIntent();
+        search_results_text.setText(intent.getStringExtra("searchKey"));; // Example: retrieving a string value*/
     }
 
     private void initSearchResults()
@@ -50,4 +59,10 @@ public class SearchResultsActivity extends AppCompatActivity {
         this.search_results.addItemDecoration(new ItemSpacingDecorationBottom(this, spacingInPixels));
     }
 
+    public void ArrowBack(View view)
+    {
+        Intent intent = new Intent(this, MainPage.class); // run the main class
+        startActivity(intent);
+        finish();
+    }
 }
