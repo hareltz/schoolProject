@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Appointment;
+import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
@@ -17,16 +18,18 @@ import java.util.ArrayList;
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.Viewholder>
 {
     ArrayList<Appointment> appointments;
+    private final IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick;
 
-    public AppointmentAdapter(ArrayList<Appointment> appointments) {
+    public AppointmentAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick) {
         this.appointments = appointments;
+        this.iRecyclerViewOnItemClick = iRecyclerViewOnItemClick;
     }
 
     @NonNull
     @Override
     public AppointmentAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_appointments, parent, false);
-        return new AppointmentAdapter.Viewholder(view);
+        return new AppointmentAdapter.Viewholder(view, iRecyclerViewOnItemClick);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView Name, PhoneNumber, Date, Time;
         com.google.android.material.imageview.ShapeableImageView Pic;
 
-        public Viewholder(@NonNull View itemView)
+        public Viewholder(@NonNull View itemView, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick)
         {
             super(itemView);
             Name = itemView.findViewById((R.id.appointment_barbers_name));
@@ -60,6 +63,19 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             Time = itemView.findViewById(R.id.appointment_time);
             Pic = itemView.findViewById(R.id.appointment_barber_pic);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iRecyclerViewOnItemClick != null)
+                    {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION)
+                        {
+                            iRecyclerViewOnItemClick.onAppointmentClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

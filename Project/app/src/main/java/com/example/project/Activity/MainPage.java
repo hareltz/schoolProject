@@ -17,14 +17,15 @@ import com.example.project.Adapter.BarberAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationRight;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
+import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
 
-public class MainPage extends AppCompatActivity {
+public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick {
 
     private RecyclerView appointments,favourites, populars;
-    private RecyclerView.Adapter appointments_add,favourites_add, populars_add;
+    private RecyclerView.Adapter appointments_add, favourites_add, populars_add;
     EditText searchBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class MainPage extends AppCompatActivity {
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        appointments_add = new AppointmentAdapter(appointments);
+        appointments_add = new AppointmentAdapter(appointments, this);
         this.appointments.setAdapter(appointments_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
@@ -136,5 +137,17 @@ public class MainPage extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onAppointmentClick(int position) {
 
+        Barber barber = ((BarberAdapter) favourites_add).GetBarberByPosition(position);
+
+        Intent intent = new Intent(this, BarberInfo.class);
+        intent.putExtra("barberNameKey", barber.getName());
+        intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
+        intent.putExtra("barberAddressKey", barber.getAddress()); // add this when I connect the DB (I just need to get the ID somehow / name)
+
+        startActivity(intent);
+        finish();
+    }
 }

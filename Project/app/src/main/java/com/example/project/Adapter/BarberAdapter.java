@@ -58,4 +58,9 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
 
         }
     }
+
+    public Barber GetBarberByPosition(int position)
+    {
+        return barbers.get(position);
+    }
 }
