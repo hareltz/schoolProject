@@ -1,5 +1,6 @@
 package com.example.project.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +28,7 @@ public class AppointmentInfo extends AppCompatActivity {
             return insets;
         });
 
-        // change this to get only the barber ID and get this info from the DB
+        // change this to get only the Appointment ID and get this info from the DB
 
         name = findViewById(R.id.appointmentInfo_name);
         name2 = findViewById(R.id.appointmentInfo_name2);
@@ -40,6 +41,13 @@ public class AppointmentInfo extends AppCompatActivity {
         name2.setText(intent.getStringExtra("barberNameKey"));
         phoneNum.setText(intent.getStringExtra("barberPhoneKey"));
         address.setText(intent.getStringExtra("barberAddressKey"));
+        date.setText(intent.getStringExtra("barberDateKey"));
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void CancelAppointment(View view)
+    {
+        name2.setText("currently under development");
     }
 
     public void ArrowBack(View view)

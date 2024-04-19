@@ -70,16 +70,16 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1);
+        Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
 
-        tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1);
+        tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "02/04/2024", "12:00"));
 
-        tempBarber = new Barber("harel3", "050-7870003", R.drawable.user_1);
+        tempBarber = new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "03/04/2024", "16:00"));
 
-        tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1);
+        tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));
         Log.d("MainActivity", "This is a debug message");
         // Initialize RecyclerView and set layout manager
@@ -98,10 +98,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private void initFavourites()
     {
         ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));
 
         // Initialize RecyclerView and set layout manager
         favourites = findViewById(R.id.favourites_list);
@@ -119,10 +119,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private void initPopular()
     {
         ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1));
-        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1));
+        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));
 
         // Initialize RecyclerView and set layout manager
         populars = findViewById(R.id.popular_list);
@@ -143,10 +143,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         Appointment appointment = ((AppointmentAdapter) appointments_add).GetAppointmentByPosition(position);
 
-        Intent intent = new Intent(this, BarberInfo.class);
+        Intent intent = new Intent(this, AppointmentInfo.class);
         intent.putExtra("barberNameKey", appointment.getBarber().getName());
         intent.putExtra("barberPhoneKey", appointment.getBarber().getPhoneNumber());
-        intent.putExtra("barberAddressKey", appointment.getBarber().getAddress()); // add this when I connect the DB (I just need to get the ID somehow / name)
+        intent.putExtra("barberAddressKey", appointment.getBarber().getAddress());
+        intent.putExtra("barberDateKey", appointment.getDate() + " -- " + appointment.getTime());
 
         startActivity(intent);
         finish();
@@ -166,9 +167,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         }
 
         Intent intent = new Intent(this, BarberInfo.class);
+        assert barber != null; // check that "barber" is not null
         intent.putExtra("barberNameKey", barber.getName());
         intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress()); // add this when I connect the DB (I just need to get the ID somehow / name)
+        intent.putExtra("barberAddressKey", barber.getAddress());
 
         startActivity(intent);
         finish();
