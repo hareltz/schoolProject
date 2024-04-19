@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
+import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
@@ -17,16 +18,20 @@ import java.util.ArrayList;
 public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder>
 {
     ArrayList<Barber> barbers;
+    private final IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick;
+    private final int type; // 1 - Favourites // 2 - Popular
 
-    public BarberAdapter(ArrayList<Barber> barbers) {
+    public BarberAdapter(ArrayList<Barber> barbers, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick, int type) {
         this.barbers = barbers;
+        this.iRecyclerViewOnBarberClick = iRecyclerViewOnBarberClick;
+        this.type = type;
     }
 
     @NonNull
     @Override
     public BarberAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_barber_box, parent, false);
-        return new Viewholder(view);
+        return new Viewholder(view, iRecyclerViewOnBarberClick, type);
     }
 
     @Override
@@ -49,13 +54,26 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
         TextView Name, PhoneNumber;
         com.google.android.material.imageview.ShapeableImageView pic;
 
-        public Viewholder(@NonNull View itemView)
+        public Viewholder(@NonNull View itemView, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick, int type)
         {
             super(itemView);
             Name = itemView.findViewById((R.id.barber_name));
             PhoneNumber = itemView.findViewById(R.id.barbers_phone);
             pic = itemView.findViewById(R.id.barbers_pic);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iRecyclerViewOnBarberClick != null)
+                    {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION)
+                        {
+                            iRecyclerViewOnBarberClick.onBarberClick(position, type);
+                        }
+                    }
+                }
+            });
         }
     }
 

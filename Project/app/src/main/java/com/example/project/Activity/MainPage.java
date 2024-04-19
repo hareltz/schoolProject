@@ -18,11 +18,12 @@ import com.example.project.Decoration.ItemSpacingDecorationRight;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
+import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
 
-public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick {
+public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
     private RecyclerView appointments,favourites, populars;
     private RecyclerView.Adapter appointments_add, favourites_add, populars_add;
@@ -107,7 +108,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        favourites_add = new BarberAdapter(barbers);
+        favourites_add = new BarberAdapter(barbers, this , 1);
         favourites.setAdapter(favourites_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
@@ -128,7 +129,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        populars_add = new BarberAdapter(barbers);
+        populars_add = new BarberAdapter(barbers, this , 2);
         populars.setAdapter(populars_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
@@ -140,7 +141,29 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     @Override
     public void onAppointmentClick(int position) {
 
-        Barber barber = ((BarberAdapter) favourites_add).GetBarberByPosition(position);
+        Appointment appointment = ((AppointmentAdapter) appointments_add).GetAppointmentByPosition(position);
+
+        Intent intent = new Intent(this, BarberInfo.class);
+        intent.putExtra("barberNameKey", appointment.getBarber().getName());
+        intent.putExtra("barberPhoneKey", appointment.getBarber().getPhoneNumber());
+        intent.putExtra("barberAddressKey", appointment.getBarber().getAddress()); // add this when I connect the DB (I just need to get the ID somehow / name)
+
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBarberClick(int position, int type)
+    {
+        Barber barber = null;
+        if (type == 1)
+        {
+            barber = ((BarberAdapter) favourites_add).GetBarberByPosition(position);
+        }
+        else if (type == 2)
+        {
+            barber = ((BarberAdapter) populars_add).GetBarberByPosition(position);
+        }
 
         Intent intent = new Intent(this, BarberInfo.class);
         intent.putExtra("barberNameKey", barber.getName());

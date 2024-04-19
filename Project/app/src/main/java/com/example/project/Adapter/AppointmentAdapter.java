@@ -49,6 +49,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         return appointments.size();
     }
 
+    public Appointment GetAppointmentByPosition(int position) {
+        return appointments.get(position);
+    }
+
     public static class Viewholder extends RecyclerView.ViewHolder
     {
         TextView Name, PhoneNumber, Date, Time;
