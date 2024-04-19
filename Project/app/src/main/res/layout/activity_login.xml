@@ -12,7 +12,7 @@
         android:layout_width="420dp"
         android:layout_height="225dp"
         android:gravity="center"
-        android:text="BARBARA"
+        android:text="BarberBox"
         android:textColor="@color/white"
         android:textSize="50dp"
         tools:ignore="MissingConstraints"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="BARBARA"
+            android:text="BarberBox"
             android:textSize="45dp" />
 
         <EditText
