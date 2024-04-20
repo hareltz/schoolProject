@@ -65,4 +65,26 @@ public class SearchResultsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void menuHome(View view) {
+        Intent intent = new Intent(this, MainPage.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void menuSearch(View view) {
+        // we here already
+    }
+
+    public void menuUser(View view) {
+        /*Intent intent = new Intent(this, MainPage.class);
+        startActivity(intent);
+        finish();*/
+    }
+
+    public void menuSettings(View view) {
+        /*Intent intent = new Intent(this, MainPage.class);
+        startActivity(intent);
+        finish();*/
+    }
 }

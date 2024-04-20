@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -174,5 +175,24 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         startActivity(intent);
         finish();
+    }
+
+    public void menuHome(View view) {
+
+    }
+
+    public void menuSearch(View view) {
+        Intent intent = new Intent(this, SearchResultsActivity.class); // run the main class
+        intent.putExtra("searchKey", "NULL"); // Example: sending a string value
+        startActivity(intent);
+        finish();
+    }
+
+    public void menuUser(View view) {
+
+    }
+
+    public void menuSettings(View view) {
+
     }
 }
