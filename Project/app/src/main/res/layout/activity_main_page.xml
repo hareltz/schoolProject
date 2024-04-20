@@ -129,7 +129,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/appointment_list"
                     android:layout_width="340dp"
-                    android:layout_height="135dp"
+                    android:layout_height="150dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 
@@ -156,7 +156,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favourites_list"
                     android:layout_width="340dp"
-                    android:layout_height="100dp"
+                    android:layout_height="135dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 
@@ -182,7 +182,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/popular_list"
                     android:layout_width="340dp"
-                    android:layout_height="100dp"
+                    android:layout_height="135dp"
                     tools:ignore="MissingConstraints" />
 
             </LinearLayout>

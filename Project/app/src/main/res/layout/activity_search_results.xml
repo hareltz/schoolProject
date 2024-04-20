@@ -62,7 +62,7 @@
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="356dp"
-                android:layout_height="589dp"
+                android:layout_height="662dp"
                 android:layout_marginStart="32dp"
                 android:orientation="vertical">
 
@@ -80,7 +80,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/search_results_list"
                     android:layout_width="340dp"
-                    android:layout_height="543dp"
+                    android:layout_height="620dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 

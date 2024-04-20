@@ -2,16 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="135dp"
+    android:layout_height="135dp"
     android:background="@drawable/curve_hazy_white"
     android:clickable="true">
 
     <!-- Image that stay round -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/barbers_pic"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="harel tzanani"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/barbers_pic"
         app:layout_constraintStart_toStartOf="@+id/barbers_pic"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="050-7870003"
         android:textColor="#CCFFFFFF"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/barber_name"
         app:layout_constraintStart_toStartOf="@+id/barber_name"
