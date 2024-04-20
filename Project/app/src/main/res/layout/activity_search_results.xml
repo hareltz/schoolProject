@@ -25,19 +25,20 @@
 
                 <EditText
                     android:id="@+id/search_bar"
-                    android:layout_width="300dp"
+                    android:layout_width="265dp"
                     android:layout_height="55dp"
                     android:layout_gravity="right"
+                    android:layout_marginStart="110dp"
                     android:layout_marginTop="32dp"
+                    android:layout_marginEnd="42dp"
                     android:background="@drawable/edittext_background"
-                    android:drawableStart="@drawable/search_icon"
+                    android:drawableStart="@drawable/search_icon_black"
                     android:drawablePadding="16dp"
                     android:ems="10"
                     android:hint="Search"
                     android:inputType="text"
                     android:padding="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.67"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
@@ -46,11 +47,13 @@
                     android:id="@+id/imageView3"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="42dp"
                     android:layout_marginEnd="15dp"
                     android:onClick="ArrowBack"
                     android:src="@drawable/back"
                     app:layout_constraintBottom_toBottomOf="@+id/search_bar"
                     app:layout_constraintEnd_toStartOf="@+id/search_bar"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/search_bar"
                     tools:ignore="TouchTargetSizeCheck" />
 
@@ -58,8 +61,8 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="356dp"
+                android:layout_height="589dp"
                 android:layout_marginStart="32dp"
                 android:orientation="vertical">
 
@@ -77,12 +80,62 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/search_results_list"
                     android:layout_width="340dp"
-                    android:layout_height="1000dp"
+                    android:layout_height="543dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.97">
+
+        <ImageView
+            android:id="@+id/homeIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:onClick="menuHome"
+            app:srcCompat="@drawable/home_icon"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/searchIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:backgroundTint="#7EFFFFFF"
+            android:onClick="menuSearch"
+            app:srcCompat="@drawable/search_icon"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/userIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:onClick="menuUser"
+            app:srcCompat="@drawable/user_icon"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/settingsIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:onClick="menuSettings"
+            app:srcCompat="@drawable/settings_icon"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
