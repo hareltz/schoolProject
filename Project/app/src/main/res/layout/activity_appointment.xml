@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_drawable"
-    tools:context=".AppointmentActivity">
+    tools:context=".Activity.AppointmentActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout5"
@@ -26,9 +26,9 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_results_list"
+            android:id="@+id/appointmentScreen_search_results_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="516dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             tools:ignore="MissingConstraints" />

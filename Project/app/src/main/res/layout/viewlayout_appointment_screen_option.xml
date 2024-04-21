@@ -32,15 +32,16 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/appointment_choose_time"
         app:layout_constraintStart_toStartOf="@+id/appointment_choose_time"
-        app:layout_constraintTop_toBottomOf="@+id/appointment_choose_time" />
+        app:layout_constraintTop_toBottomOf="@+id/appointment_choose_time"
+        tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/search_results_price"
+        android:id="@+id/appointment_choose_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginBottom="5dp"
 
+        android:layout_marginBottom="5dp"
         android:text="50$"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
