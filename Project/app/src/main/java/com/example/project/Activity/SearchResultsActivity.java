@@ -9,14 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project.Adapter.BarberAdapter;
 import com.example.project.Adapter.SearchResultsAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationBottom;
 import com.example.project.Domain.Barber;
+import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
 
-public class SearchResultsActivity extends AppCompatActivity {
+public class SearchResultsActivity extends AppCompatActivity implements IRecyclerViewOnBarberClick {
 
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
@@ -44,15 +46,15 @@ public class SearchResultsActivity extends AppCompatActivity {
         searchResults.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel5", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
 
         // Initialize RecyclerView and set layout manager
         this.search_results = findViewById(R.id.search_results_list);
         this.search_results.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // Create and set adapter
-        search_results_add = new SearchResultsAdapter(searchResults);
-        this.search_results.setAdapter(search_results_add);
+        this.search_results_add = new SearchResultsAdapter(searchResults, this);
+        this.search_results.setAdapter(this.search_results_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
@@ -86,5 +88,20 @@ public class SearchResultsActivity extends AppCompatActivity {
         /*Intent intent = new Intent(this, MainPage.class);
         startActivity(intent);
         finish();*/
+    }
+
+    @Override
+    public void onBarberClick(int position, int type)
+    {
+        Barber barber = ((SearchResultsAdapter)this.search_results_add).GetBarberByPosition(position);
+
+        Intent intent = new Intent(this, BarberInfo.class);
+        assert barber != null; // check that "barber" is not null
+        intent.putExtra("barberNameKey", barber.getName());
+        intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
+        intent.putExtra("barberAddressKey", barber.getAddress());
+
+        startActivity(intent);
+        finish();
     }
 }

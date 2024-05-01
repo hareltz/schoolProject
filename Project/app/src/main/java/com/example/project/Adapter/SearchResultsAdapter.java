@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
+import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
 import java.util.ArrayList;
@@ -17,16 +18,17 @@ import java.util.ArrayList;
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Viewholder>
 {
     ArrayList<Barber> searchResult;
-
-    public SearchResultsAdapter(ArrayList<Barber> searchResult) {
+    private final IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick;
+    public SearchResultsAdapter(ArrayList<Barber> searchResult, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick) {
         this.searchResult = searchResult;
+        this.iRecyclerViewOnBarberClick = iRecyclerViewOnBarberClick;
     }
 
     @NonNull
     @Override
     public SearchResultsAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_search_result, parent, false);
-        return new Viewholder(view);
+        return new Viewholder(view, iRecyclerViewOnBarberClick);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         TextView Name, PhoneNumber, Address, Price;
         com.google.android.material.imageview.ShapeableImageView Pic;
 
-        public Viewholder(@NonNull View itemView)
+        public Viewholder(@NonNull View itemView, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick)
         {
             super(itemView);
             Name = itemView.findViewById((R.id.search_results_barbers_name));
@@ -59,6 +61,25 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             Pic = itemView.findViewById(R.id.search_results_barber_pic);
             Address = itemView.findViewById(R.id.search_results_address);
             Price = itemView.findViewById(R.id.search_results_price);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iRecyclerViewOnBarberClick != null)
+                    {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION)
+                        {
+                            iRecyclerViewOnBarberClick.onBarberClick(position, -1);
+                        }
+                    }
+                }
+            });
         }
+    }
+
+    public Barber GetBarberByPosition(int position)
+    {
+        return searchResult.get(position);
     }
 }

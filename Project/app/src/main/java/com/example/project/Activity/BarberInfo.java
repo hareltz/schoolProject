@@ -47,7 +47,13 @@ public class BarberInfo extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void MakeAppointment(View view)
     {
-        name2.setText("currently under development");
+
+        Intent intent = new Intent(this, AppointmentActivity.class); // run the main class
+        intent.putExtra("nameKey", name.getText());
+        intent.putExtra("picAddKey", "user_1");
+
+        startActivity(intent);
+        finish();
     }
 
     public void ArrowBack(View view)
