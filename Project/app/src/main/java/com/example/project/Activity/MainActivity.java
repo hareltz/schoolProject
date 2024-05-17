@@ -3,11 +3,15 @@ package com.example.project.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.project.Fragment.LoginFragment;
 import com.example.project.R;
+import com.example.project.Fragment.RegisterFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,23 +21,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        replaceFragment(new LoginFragment());
+    }
+
+    // this function switch between fragments.
+    public void replaceFragment(Fragment fragment)
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
+    }
+
+    // this function is a listener that switch from RegisterFragment -> LoginFragment
+    public void F_Login(View view)
+    {
+        replaceFragment(new LoginFragment());
+    }
+
+    public void F_RegisterBT(View view)
+    {
+        // register code
+
         Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
-
-
     }
 
-    public void openBarberProfile(View view)
+    // this function is a listener that switch from RegisterFragment -> LoginFragment
+    public void F_Register(View view)
     {
-        EditText name = view.findViewById(R.id.barber_name);
-        EditText phoneNumber = view.findViewById(R.id.barbers_phone);
+        replaceFragment(new RegisterFragment());
+    }
 
-        Intent intent = new Intent(this, BarberInfo.class);
-        intent.putExtra("barberNameKey", name.getText().toString());
-        intent.putExtra("barberPhoneKey", phoneNumber.getText().toString());
-        intent.putExtra("barberAddressKey", "NULL"); // add this when I connect the DB (I just need to get the ID somehow / name)
+    public void F_LoginBT(View view)
+    {
+        // login code
 
+        Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
     }

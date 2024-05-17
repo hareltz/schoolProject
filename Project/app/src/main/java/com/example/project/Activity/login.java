@@ -1,13 +1,13 @@
 package com.example.project.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.project.R;
 
@@ -36,8 +36,6 @@ public class login extends AppCompatActivity {
 
     public void LoginBT(View view)
     {
-        Log.println(Log.DEBUG,"debug", "username: " + username.getText() + " | password: " + password.getText());
-
         Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();

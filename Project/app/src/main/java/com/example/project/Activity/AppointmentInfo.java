@@ -1,12 +1,14 @@
 package com.example.project.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,6 +18,7 @@ import com.example.project.R;
 
 public class AppointmentInfo extends AppCompatActivity {
     TextView name, name2, phoneNum, address, date;
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,8 @@ public class AppointmentInfo extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        builder = new AlertDialog.Builder(this);
 
         // change this to get only the Appointment ID and get this info from the DB
 
@@ -47,7 +52,24 @@ public class AppointmentInfo extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void CancelAppointment(View view)
     {
-        name2.setText("currently under development");
+        builder.setTitle("Alert!")
+                .setMessage("Do you sure want to cancel the appointment?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     public void ArrowBack(View view)

@@ -1,6 +1,7 @@
 package com.example.project.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,6 +31,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
     private RecyclerView appointments;
     private RecyclerView.Adapter appointments_add;
     private TextView name;
+    AlertDialog.Builder builder;
 
     com.google.android.material.imageview.ShapeableImageView Pic;
 
@@ -45,6 +48,8 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
             return insets;
         });
 
+        builder = new AlertDialog.Builder(this);
+
         Pic = findViewById(R.id.appointmentScreen_profile_pic);
         name = findViewById(R.id.appointmentScreen_BarberName);
 
@@ -59,11 +64,24 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
 
     @Override
     public void onAppointmentClick(int position) {
-        // when I link the DB
-        // add this appointment to the user list and get back to the home screen
-        Intent intent = new Intent(this, MainPage.class); // run the main class
-        startActivity(intent);
-        finish();
+        builder.setTitle("Alert!")
+                .setMessage("Are you sure you want to make an appointment?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void initAppointment() // take here data from DB
