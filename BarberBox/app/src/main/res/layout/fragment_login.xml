@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.LoginFragment">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="420dp"
+        android:layout_height="225dp"
+        android:gravity="center"
+        android:text="BarberBox"
+        android:textColor="@color/white"
+        android:textSize="50dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-5dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="225dp"
+        android:layout_marginBottom="-100dp"
+        android:background="@drawable/curve_white_layout"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/barberInfo_name2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="BarberBox"
+            android:textSize="45dp" />
+
+        <EditText
+            android:id="@+id/f_enterEmailLogin"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left|center_vertical"
+            android:hint="Enter Email"
+            android:inputType="text"
+            android:paddingTop="15dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:layout_marginStart="15dp" />
+
+        <EditText
+            android:id="@+id/f_enterPasswordLogin"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:ignore="MissingConstraints"
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp" />
+
+        <TextView
+            android:id="@+id/f_loginBt"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/default_bt"
+            android:gravity="center"
+            android:onClick="F_LoginBT"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Login"
+            android:textColor="@color/white"
+            android:textSize="35dp"
+            tools:layout_marginLeft="15dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="243dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="Don’t have an account? "
+                android:textColor="#828282" />
+
+            <TextView
+                android:id="@+id/f_registerHere"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="70dp"
+                android:layout_weight="1"
+                android:onClick="F_Register"
+                android:text="Register here!"
+                android:textColor="#6B1CAA"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#828282" />
+
+
+    </LinearLayout>
+
+</FrameLayout>

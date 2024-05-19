@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1056388280057",
+    "project_id": "barberbox-a4a9c",
+    "storage_bucket": "barberbox-a4a9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056388280057:android:9ed62ab133f2f2b903fc28",
+        "android_client_info": {
+          "package_name": "com.barberbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyhecit7ifWlGW45ubBBXmysllkvB5ZOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056388280057:android:a45497120cb846c903fc28",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyhecit7ifWlGW45ubBBXmysllkvB5ZOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
