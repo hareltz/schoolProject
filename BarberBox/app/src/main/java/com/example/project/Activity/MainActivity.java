@@ -12,16 +12,33 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.project.Fragment.LoginFragment;
 import com.example.project.R;
 import com.example.project.Fragment.RegisterFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        replaceFragment(new LoginFragment());
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user == null)
+        {
+            replaceFragment(new LoginFragment());
+        }
+        else
+        {
+            Intent intent = new Intent(this, MainPage.class); // run the main class
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     // this function switch between fragments.
