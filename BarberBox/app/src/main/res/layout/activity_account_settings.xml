@@ -81,7 +81,7 @@
             tools:paddingStart="15dp" />
 
         <EditText
-            android:id="@+id/AccountSettings_oldPassword"
+            android:id="@+id/AccountSettings_currentPassword"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
 
@@ -90,7 +90,7 @@
             android:layout_marginEnd="15dp"
             android:ems="10"
             android:gravity="center|left"
-            android:hint="Enter Old Password (required for every change)"
+            android:hint="Enter Current Password"
             android:inputType="textPassword"
             android:minHeight="48dp"
             android:paddingEnd="15dp"
