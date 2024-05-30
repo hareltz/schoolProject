@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.project.Helper;
 import com.example.project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -104,7 +105,7 @@ public class AccountSettings extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             listener.onSuccess();
                         } else {
-                            Toast.makeText(AccountSettings.this, "Re-authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountSettings.this, "Current password is incorrect", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -131,26 +132,35 @@ public class AccountSettings extends AppCompatActivity {
         });
     }
 
+    // this function update the password
     private void updatePassword(String newPassword, String currentPassword) {
 
-        authenticate(currentPassword, new OnAuthenticateListener() {
-            @Override
-            public void onSuccess() {
-                user.updatePassword(newPassword)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(AccountSettings.this, "Password updated.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(AccountSettings.this, "Failed to update password.", Toast.LENGTH_SHORT).show();
+        if (Helper.checkPassword(newPassword) != Helper.GOOD_PASSWORD)
+        {
+            Toast.makeText(AccountSettings.this, Helper.checkPassword(newPassword), Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            authenticate(currentPassword, new OnAuthenticateListener() {
+                @Override
+                public void onSuccess() {
+                    user.updatePassword(newPassword)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(AccountSettings.this, "Password updated.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(AccountSettings.this, "Failed to update password.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
-            }
-        });
+                            });
+                }
+            });
+        }
     }
 
+    // this function update the username
     private void updateUsername(String newUsername, String currentPassword) {
         authenticate(currentPassword, new OnAuthenticateListener() {
             @Override
@@ -174,6 +184,7 @@ public class AccountSettings extends AppCompatActivity {
         });
     }
 
+    // an interface for this class only
     interface OnAuthenticateListener {
         void onSuccess();
     }
