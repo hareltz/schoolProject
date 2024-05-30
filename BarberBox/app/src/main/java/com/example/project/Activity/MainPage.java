@@ -189,7 +189,9 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     }
 
     public void menuUser(View view) {
-
+        Intent intent = new Intent(this, AccountSettings.class); // run the main class
+        startActivity(intent);
+        finish();
     }
 
     public void menuSettings(View view) {

@@ -98,7 +98,7 @@ public class RegisterFragment extends Fragment {
                                                         });
                                             }
 
-                                            FirebaseAuth.getInstance().signOut();
+                                            //FirebaseAuth.getInstance().signOut();
                                             mainActivity.End();
                                         } else {
                                             // If sign in fails, display a message to the user.
