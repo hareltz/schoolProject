@@ -1,5 +1,6 @@
 package com.example.project.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.project.Activity.MainActivity;
 import com.example.project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +27,20 @@ public class LoginFragment extends Fragment
     TextView registerBT;
     EditText emailField, passwordField;
     FirebaseAuth mAuth;
+
+    private MainActivity mainActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // Cast the context (which is the activity) to the specific activity class
+        if (context instanceof MainActivity) {
+            mainActivity = (MainActivity) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must be an instance of MainActivity");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +76,7 @@ public class LoginFragment extends Fragment
                                         Toast.makeText(getActivity(), "Authentication succeed.",
                                                 Toast.LENGTH_SHORT).show();
                                         FirebaseAuth.getInstance().signOut();
+                                        mainActivity.End();
 
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -73,17 +92,5 @@ public class LoginFragment extends Fragment
 
 
         return view;
-    }
-
-    public void LoginBT(View view)
-    {
-
-    }
-
-    public void ToRegister(View view)
-    {
-        /*if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).replaceFragment(new RegisterFragment());
-        }*/
     }
 }

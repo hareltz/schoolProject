@@ -87,7 +87,6 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/default_bt"
             android:gravity="center"
-            android:onClick="F_LoginBT"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="Login"

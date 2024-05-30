@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        // FirebaseAuth.getInstance().signOut(); // delete later, for debug
 
         if (user == null)
         {
@@ -34,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            Intent intent = new Intent(this, MainPage.class); // run the main class
-            startActivity(intent);
-            finish();
+            End();
         }
 
     }
@@ -62,20 +61,9 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new RegisterFragment());
     }
 
-    public void F_RegisterBT(View view)
+    // this function take the user to the main screen
+    public void End()
     {
-        // register code
-
-        Intent intent = new Intent(this, MainPage.class); // run the main class
-        startActivity(intent);
-        finish();
-    }
-
-
-    public void F_LoginBT(View view)
-    {
-        // login code
-
         Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
