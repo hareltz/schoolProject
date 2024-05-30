@@ -56,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new LoginFragment());
     }
 
+    // this function is a listener that switch from RegisterFragment -> LoginFragment
+    public void F_Register(View view)
+    {
+        replaceFragment(new RegisterFragment());
+    }
+
     public void F_RegisterBT(View view)
     {
         // register code
@@ -65,11 +71,6 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    // this function is a listener that switch from RegisterFragment -> LoginFragment
-    public void F_Register(View view)
-    {
-        replaceFragment(new RegisterFragment());
-    }
 
     public void F_LoginBT(View view)
     {
