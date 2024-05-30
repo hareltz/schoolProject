@@ -79,9 +79,9 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     }
 
     public void menuUser(View view) {
-        /*Intent intent = new Intent(this, MainPage.class);
+        Intent intent = new Intent(this, AccountSettings.class);
         startActivity(intent);
-        finish();*/
+        finish();
     }
 
     public void menuSettings(View view) {

@@ -55,7 +55,8 @@
             android:paddingTop="15dp"
             android:paddingEnd="15dp"
             android:textColor="#6B1CAA"
-            tools:layout_marginStart="15dp" />
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp"/>
 
         <EditText
             android:id="@+id/f_enterPasswordRegister"

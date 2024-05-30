@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_drawable"
+    tools:context=".Activity.AccountSettings"
+    >
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="-100dp"
+        android:background="@drawable/curve_white_layout"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <EditText
+            android:id="@+id/AccountSettings_newEmail"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left|center_vertical"
+            android:hint="Enter New Email"
+            android:inputType="text"
+            android:paddingTop="70dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp"
+            />
+
+        <EditText
+            android:id="@+id/AccountSettings_newUsername"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="Enter New Username"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:ignore="MissingConstraints"
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp" />
+
+        <EditText
+            android:id="@+id/AccountSettings_newPassword"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="Enter New Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:ignore="MissingConstraints"
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp" />
+
+        <EditText
+            android:id="@+id/AccountSettings_currentPassword"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:gravity="center|left"
+            android:hint="Enter Current Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:paddingEnd="15dp"
+            android:textColor="#6B1CAA"
+            tools:ignore="MissingConstraints"
+            tools:layout_marginStart="15dp"
+            tools:paddingStart="15dp" />
+
+        <TextView
+            android:id="@+id/cancelAppointmentBT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/default_bt"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:onClick="UpdateAccountSettings"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Update Account Settings"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            tools:gravity="center"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/AccountSettings_Logout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="Logout"
+                android:text="Logout"
+                android:textColor="#6B1CAA"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/AccountSettings_headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Account Settings"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/AccountSettings_arrowBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="36dp"
+        android:onClick="ArrowBack"
+        android:src="@drawable/back"
+        app:layout_constraintBottom_toTopOf="@+id/AccountSettings_headline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.044"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/AccountSettings_profile_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AccountSettings_headline"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        app:srcCompat="@drawable/user_1"
+        tools:srcCompat="@drawable/user_2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
