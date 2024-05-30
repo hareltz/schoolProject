@@ -1,5 +1,6 @@
 package com.example.project.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import com.example.project.Domain.Barber;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -29,6 +32,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private RecyclerView appointments,favourites, populars;
     private RecyclerView.Adapter appointments_add, favourites_add, populars_add;
     EditText searchBar;
+    TextView hiUsername;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +46,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         favourites = findViewById(R.id.favourites_list);
         populars = findViewById(R.id.popular_list);
         searchBar = findViewById(R.id.search_bar);
+        hiUsername = findViewById(R.id.hi_username_text);
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        hiUsername.setText("Hi, " + user.getDisplayName()); // check if user == null in mainActivity.java
 
         initAppointment();
         initFavourites();
