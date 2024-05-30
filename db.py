@@ -1,12 +1,18 @@
+import os
+
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, storage
 from google.cloud.firestore_v1 import GeoPoint
 from datetime import datetime, timedelta
 import calendar
 
+from google.cloud.storage import bucket
+
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate('barberbox-a4a9c-firebase-adminsdk-oqrr5-0d1faba8a5.json')
-firebase_admin.initialize_app(cred)
+cred = credentials.Certificate('D:/pics_android/barberbox-a4a9c-firebase-adminsdk-oqrr5-ed2a0afd96.json')
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'barberbox-a4a9c.appspot.com'
+})
 
 # Initialize Firestore DB
 db = firestore.client()
@@ -120,12 +126,32 @@ barbers_data = [
     }
 ]
 
+
+# Function to upload pictures to Firebase Storage
+def upload_pictures(folder_path):
+    for filename in os.listdir(folder_path):
+
+        if filename.endswith(('.png', '.jpg', '.jpeg')):
+            print(filename)
+            bucket = storage.bucket()
+
+            imagePath = os.path.join(folder_path, filename)
+            blob = bucket.blob(f'barber_pictures/{filename}')
+            with open(imagePath, 'rb') as f:
+                blob.upload_from_file(f)
+
+            print(f'Uploaded {filename} to Firebase Storage.')
+
+
 # Function to add barbers to Firestore
 def add_barbers_to_firestore(barbers):
     for barber in barbers:
+        picture_name = barber['name'].lower().replace(' ', '_') + '.png'
+        barber['picture_reference'] = f'barber_pictures/{picture_name}'
         doc_ref = db.collection('barbers').document()
         doc_ref.set(barber)
-        print(f'Added barber: {barber["name"]}')
+        print(f'Added barber: {barber["name"]} with picture reference.')
+
 
 # Function t1o generate appointment times for a given month
 def generate_appointments_for_month(year, month):
@@ -142,6 +168,7 @@ def generate_appointments_for_month(year, month):
                 })
     return appointments
 
+
 # Function to add appointments for each barber for the specified month
 def add_appointments_for_month(year, month):
     appointments = generate_appointments_for_month(year, month)
@@ -152,6 +179,7 @@ def add_appointments_for_month(year, month):
         barber_ref.update({'appointments': appointments})
         print(f'Added appointments for {barber.get("name")} for {calendar.month_name[month]} {year}')
 
+
 # Menu for user interaction
 def menu():
     while True:
@@ -160,6 +188,7 @@ def menu():
         print("3. Exit")
         choice = input("Enter your choice: ")
         if choice == '1':
+            upload_pictures("D:/pics_android")
             add_barbers_to_firestore(barbers_data)
         elif choice == '2':
             year = int(input("Enter year (e.g., 2024): "))
@@ -169,6 +198,7 @@ def menu():
             break
         else:
             print("Invalid choice. Please try again.")
+
 
 if __name__ == '__main__':
     menu()
