@@ -35,7 +35,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull AppointmentAdapter.Viewholder holder, int position) {
-        holder.Name.setText(appointments.get(position).getBarber().getName());
+        holder.Name.setText(appointments.get(position).getBarber().getName().split(" ")[0]);
         holder.PhoneNumber.setText(appointments.get(position).getBarber().getPhone_number());
         holder.Date.setText(Helper.getDateFromGeoPoint(appointments.get(position).getAppointmentTime()));
         holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));

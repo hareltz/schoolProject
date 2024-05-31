@@ -39,14 +39,6 @@ public class Barber
         this.location = location;
     }
 
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
-    }
-
     public String getPicture_reference() {
         return picture_reference;
     }
@@ -69,5 +61,13 @@ public class Barber
 
     public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }

@@ -1,7 +1,10 @@
 package com.example.project.Activity;
 
+import static kotlinx.coroutines.time.TimeKt.delay;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.health.connect.datatypes.SleepSessionRecord;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,7 +32,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
@@ -39,6 +46,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     TextView hiUsername;
     FirebaseAuth mAuth;
     FirebaseUser user;
+    ArrayList<Barber> barbers;
 
     private FirebaseFirestore db;
 
@@ -60,6 +68,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        barbers = new ArrayList<>();
+
         if (user == null) // check if the user is connected
         {
             mAuth.signOut();
@@ -71,9 +81,17 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
 
         // init the RecyclerViews
-        initAppointment();
-        initFavourites();
-        initPopular();
+        initBarbers();
+
+        /*Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                
+            }
+        }, 5000);*/
+
+
 
         // Set the OnEditorActionListener inside onCreate method
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -98,23 +116,47 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         finish();
     }
 
+    private void initBarbers()
+    {
+        // Fetch data from Firestore
+        db.collection("barbers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        Barber barber = document.toObject(Barber.class);
+                        barber.set_id(document.getId());
+                        this.barbers.add(barber);
+                    }
+                    initAppointment();
+                    initFavourites();
+                    initPopular();
+                } else {
+                    Log.d("MainActivity", "No barbers found");
+                }
+            } else {
+                Log.d("MainActivity", "Error getting documents: ", task.getException());
+                // Handle error if necessary
+            }
+        });
+    }
+
     private void initAppointment()
     {
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        /*Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
+        for (Barber barber : this.barbers) {
+            List<Appointment> tempAppointments = barber.getAppointments();
+            for (Appointment appointment : tempAppointments)
+            {
+                appointment.setBarber(barber);
+                appointments.add(appointment);
+            }
+            break;
 
-        tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "02/04/2024", "12:00"));
+        }
 
-        tempBarber = new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "03/04/2024", "16:00"));
-
-        tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));
-        Log.d("MainActivity", "This is a debug message");*/
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -129,60 +171,34 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     }
 
     private void initFavourites() {
-        // Initialize RecyclerView
-        favourites = findViewById(R.id.favourites_list);
-        favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        this.favourites = findViewById(R.id.favourites_list);
+        this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // Fetch data from Firestore
-        db.collection("barbers").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                ArrayList<Barber> barbers = new ArrayList<>();
-                QuerySnapshot querySnapshot = task.getResult();
-                if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Barber barber = document.toObject(Barber.class);
-                        barber.set_id(document.getId());
-                        barbers.add(barber);
-                    }
-                    // Create and set adapter
-                    BarberAdapter favourites_add = new BarberAdapter(barbers, this, 1);
-                    favourites.setAdapter(favourites_add);
+        // Create and set adapter
+        this.favourites_add = new BarberAdapter(this.barbers, this, 1);
+        this.favourites.setAdapter(favourites_add);
 
-                    // Apply ItemSpacingDecoration to add spacing between items
-                    int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-                    favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+        // Apply ItemSpacingDecoration to add spacing between items
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        this.favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
 
-                    // Notify adapter of data changes
-                    favourites_add.notifyDataSetChanged();
-                } else {
-                    Log.d("MainActivity", "No barbers found");
-                }
-            } else {
-                Log.d("MainActivity", "Error getting documents: ", task.getException());
-                // Handle error if necessary
-            }
-        });
+        this.favourites_add.notifyDataSetChanged();
     }
 
     private void initPopular()
     {
-        ArrayList<Barber> barbers = new ArrayList<>();
-        /*barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));*/
-
-        // Initialize RecyclerView and set layout manager
-        populars = findViewById(R.id.popular_list);
-        populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        this.populars = findViewById(R.id.popular_list);
+        this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        populars_add = new BarberAdapter(barbers, this , 2);
-        populars.setAdapter(populars_add);
+        this.populars_add = new BarberAdapter(this.barbers, this, 1);
+        this.populars.setAdapter(populars_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        populars.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+        this.populars.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+
+        this.populars_add.notifyDataSetChanged();
     }
 
 
