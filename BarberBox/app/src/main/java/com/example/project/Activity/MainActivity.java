@@ -14,6 +14,8 @@ import com.example.project.R;
 import com.example.project.Fragment.RegisterFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,15 +29,15 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        // FirebaseAuth.getInstance().signOut(); // delete later, for debug
+        FirebaseApp.initializeApp(this); // init firebase app
 
         if (user == null)
         {
-            replaceFragment(new LoginFragment());
+            replaceFragment(new LoginFragment()); // if the user is not connected
         }
         else
         {
-            End();
+            End(); // if the user is connected (going to the mainPageActivity)
         }
 
     }

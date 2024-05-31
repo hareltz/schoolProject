@@ -1,5 +1,4 @@
 import os
-
 import firebase_admin
 from firebase_admin import credentials, firestore, storage
 from google.cloud.firestore_v1 import GeoPoint
@@ -22,105 +21,105 @@ barbers_data = [
     {
         'name': 'John Doe',
         'phone_number': '123-456-7890',
-        'location': GeoPoint(40.712776, -74.005974),  # New York, NY
+        'location': GeoPoint(31.768319, 35.21371),  # Jerusalem
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Jane Smith',
         'phone_number': '987-654-3210',
-        'location': GeoPoint(34.052235, -118.243683),  # Los Angeles, CA
+        'location': GeoPoint(32.0853, 34.7818),  # Tel Aviv
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Mike Johnson',
         'phone_number': '555-123-4567',
-        'location': GeoPoint(41.878113, -87.629799),  # Chicago, IL
+        'location': GeoPoint(32.794044, 34.989571),  # Haifa
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Emily Davis',
         'phone_number': '555-987-6543',
-        'location': GeoPoint(29.760427, -95.369804),  # Houston, TX
+        'location': GeoPoint(31.046051, 34.851612),  # Beersheba
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'David Wilson',
         'phone_number': '555-456-7890',
-        'location': GeoPoint(33.448376, -112.074036),  # Phoenix, AZ
+        'location': GeoPoint(32.794044, 34.989571),  # Haifa
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Linda Martinez',
         'phone_number': '555-321-9876',
-        'location': GeoPoint(39.739236, -104.990251),  # Denver, CO
+        'location': GeoPoint(31.046051, 34.851612),  # Beersheba
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'James Anderson',
         'phone_number': '555-654-3210',
-        'location': GeoPoint(25.761680, -80.191790),  # Miami, FL
+        'location': GeoPoint(32.109333, 34.855499),  # Ramat Gan
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Barbara Taylor',
         'phone_number': '555-789-1234',
-        'location': GeoPoint(47.606209, -122.332069),  # Seattle, WA
+        'location': GeoPoint(31.4117257, 35.0818155),  # Dead Sea
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Robert Harris',
         'phone_number': '555-890-1234',
-        'location': GeoPoint(32.776664, -96.796988),  # Dallas, TX
+        'location': GeoPoint(31.768319, 35.21371),  # Jerusalem
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Patricia Clark',
         'phone_number': '555-321-6547',
-        'location': GeoPoint(37.774929, -122.419416),  # San Francisco, CA
+        'location': GeoPoint(32.0853, 34.7818),  # Tel Aviv
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Daniel Lewis',
         'phone_number': '555-432-9876',
-        'location': GeoPoint(38.907192, -77.036871),  # Washington, D.C.
+        'location': GeoPoint(32.794044, 34.989571),  # Haifa
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Nancy Walker',
         'phone_number': '555-543-7890',
-        'location': GeoPoint(42.360082, -71.058880),  # Boston, MA
+        'location': GeoPoint(32.794044, 34.989571),  # Haifa
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Christopher Hall',
         'phone_number': '555-678-1234',
-        'location': GeoPoint(45.505106, -122.675026),  # Portland, OR
+        'location': GeoPoint(31.768319, 35.21371),  # Jerusalem
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Elizabeth Young',
         'phone_number': '555-765-4321',
-        'location': GeoPoint(39.961176, -82.998794),  # Columbus, OH
+        'location': GeoPoint(32.794044, 34.989571),  # Haifa
         'appointments': [],
         'picture_reference': 'path/to/picture'
     },
     {
         'name': 'Brian King',
         'phone_number': '555-876-5432',
-        'location': GeoPoint(36.162664, -86.781602),  # Nashville, TN
+        'location': GeoPoint(32.0853, 34.7818),  # Tel Aviv
         'appointments': [],
         'picture_reference': 'path/to/picture'
     }
@@ -153,8 +152,8 @@ def add_barbers_to_firestore(barbers):
         print(f'Added barber: {barber["name"]} with picture reference.')
 
 
-# Function t1o generate appointment times for a given month
-def generate_appointments_for_month(year, month):
+# Function to generate appointment times for a given month
+def generate_appointments_for_month(year, month, price):
     appointments = []
     days_in_month = calendar.monthrange(year, month)[1]
     for day in range(1, days_in_month + 1):
@@ -164,14 +163,15 @@ def generate_appointments_for_month(year, month):
                 appointment_time = datetime(year, month, day, hour, 0)
                 appointments.append({
                     'time': appointment_time,
-                    'user_id': ''
+                    'user_id': '',
+                    'price': f'{price}₪'
                 })
     return appointments
 
 
 # Function to add appointments for each barber for the specified month
-def add_appointments_for_month(year, month):
-    appointments = generate_appointments_for_month(year, month)
+def add_appointments_for_month(year, month, price):
+    appointments = generate_appointments_for_month(year, month, price)
     barbers_ref = db.collection('barbers')
     barbers = barbers_ref.stream()
     for barber in barbers:
@@ -188,12 +188,13 @@ def menu():
         print("3. Exit")
         choice = input("Enter your choice: ")
         if choice == '1':
-            upload_pictures("D:/pics_android")
+            # upload_pictures("D:/pics_android")
             add_barbers_to_firestore(barbers_data)
         elif choice == '2':
             year = int(input("Enter year (e.g., 2024): "))
             month = int(input("Enter month (1-12): "))
-            add_appointments_for_month(year, month)
+            price = input("Enter price: ")
+            add_appointments_for_month(year, month, price)
         elif choice == '3':
             break
         else:

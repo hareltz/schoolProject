@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="harel tzanani"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/barbers_pic"
         app:layout_constraintStart_toStartOf="@+id/barbers_pic"

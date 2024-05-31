@@ -41,12 +41,12 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         // replace this with data from the db
         ArrayList<Barber> searchResults = new ArrayList<>();
 
-        searchResults.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        /*searchResults.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
         searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel5", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
+        searchResults.add(new Barber("harel5", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));*/
 
         // Initialize RecyclerView and set layout manager
         this.search_results = findViewById(R.id.search_results_list);
@@ -98,8 +98,8 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         Intent intent = new Intent(this, BarberInfo.class);
         assert barber != null; // check that "barber" is not null
         intent.putExtra("barberNameKey", barber.getName());
-        intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress());
+        /*intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
+        intent.putExtra("barberAddressKey", barber.getAddress());*/
 
         startActivity(intent);
         finish();

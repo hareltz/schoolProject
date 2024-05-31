@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project.Domain.Appointment;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
 
@@ -33,9 +34,9 @@ public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentCh
 
     @Override
     public void onBindViewHolder(@NonNull AppointmentChooseAdapter.Viewholder holder, int position) {
-        holder.Date.setText(appointments.get(position).getDate());
-        holder.Time.setText(appointments.get(position).getTime());
-        holder.Price.setText("50$"); // until I link the DB
+        holder.Date.setText(Helper.getDateFromGeoPoint(appointments.get(position).getAppointmentTime()));
+        holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));
+        holder.Price.setText(appointments.get(position).getPrice());
     }
 
     @Override

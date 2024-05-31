@@ -1,34 +1,28 @@
 package com.example.project.Domain;
 
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.List;
+
 public class Barber
 {
+    private String _id;
     private String name;
-    private String phoneNumber;
-    private int picAddress;
-    private String address;
-    private String Price;
+    private String phone_number;
+    private GeoPoint location;
+    private List<Appointment> appointments;
+    private String picture_reference;
 
-    public Barber(String name, String phoneNumber, int picAddress) {
+    // Empty constructor for Firestore
+    public Barber() {}
+
+    // Constructor with parameters
+    public Barber(String name, GeoPoint location) {
         this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.picAddress = picAddress;
+        this.location = location;
     }
 
-    public Barber(String name, String phoneNumber, int picAddress, String address) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.picAddress = picAddress;
-        this.address = address;
-    }
-
-    public Barber(String name, String phoneNumber, int picAddress, String address, String price) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.picAddress = picAddress;
-        this.address = address;
-        Price = price;
-    }
-
+    // Getters and setters
     public String getName() {
         return name;
     }
@@ -37,35 +31,43 @@ public class Barber
         this.name = name;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public GeoPoint getLocation() {
+        return location;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
-    public int getPicAddress() {
-        return picAddress;
+    public List<Appointment> getAppointments() {
+        return appointments;
     }
 
-    public void setPicAddress(int picAddress) {
-        this.picAddress = picAddress;
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
-    public String getAddress() {
-        return address;
+    public String getPicture_reference() {
+        return picture_reference;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPicture_reference(String picture_reference) {
+        this.picture_reference = picture_reference;
     }
 
-    public String getPrice() {
-        return Price;
+    public String getPhone_number() {
+        return phone_number;
     }
 
-    public void setPrice(String price) {
-        Price = price;
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 }

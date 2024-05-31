@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Appointment;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
 
@@ -35,12 +36,12 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(@NonNull AppointmentAdapter.Viewholder holder, int position) {
         holder.Name.setText(appointments.get(position).getBarber().getName());
-        holder.PhoneNumber.setText(appointments.get(position).getBarber().getPhoneNumber());
-        holder.Date.setText(appointments.get(position).getDate());
-        holder.Time.setText(appointments.get(position).getTime());
+        holder.PhoneNumber.setText(appointments.get(position).getBarber().getPhone_number());
+        holder.Date.setText(Helper.getDateFromGeoPoint(appointments.get(position).getAppointmentTime()));
+        holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));
 
         Glide.with(holder.itemView.getContext())
-                .load(appointments.get(position).getBarber().getPicAddress())
+                .load(appointments.get(position).getBarber().getPicture_reference())
                 .into(holder.Pic);
     }
 
@@ -56,6 +57,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public static class Viewholder extends RecyclerView.ViewHolder
     {
         TextView Name, PhoneNumber, Date, Time;
+
         com.google.android.material.imageview.ShapeableImageView Pic;
 
         public Viewholder(@NonNull View itemView, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick)

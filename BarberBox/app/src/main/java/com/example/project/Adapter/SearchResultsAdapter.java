@@ -34,12 +34,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     @Override
     public void onBindViewHolder(@NonNull SearchResultsAdapter.Viewholder holder, int position) {
         holder.Name.setText(searchResult.get(position).getName());
-        holder.PhoneNumber.setText(searchResult.get(position).getPhoneNumber());
-        holder.Address.setText(searchResult.get(position).getAddress());
-        holder.Price.setText(searchResult.get(position).getPrice());
+        holder.PhoneNumber.setText(searchResult.get(position).getPhone_number());
+        holder.Address.setText(searchResult.get(position).getLocation().toString());
+        holder.Price.setText(searchResult.get(position).getAppointments().get(0).getPrice());
 
         Glide.with(holder.itemView.getContext())
-                .load(searchResult.get(position).getPicAddress())
+                .load(searchResult.get(position).getPicture_reference())
                 .into(holder.Pic);
     }
 

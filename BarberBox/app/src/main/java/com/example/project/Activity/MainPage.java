@@ -19,11 +19,15 @@ import com.example.project.Adapter.BarberAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationRight;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -36,23 +40,37 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     FirebaseAuth mAuth;
     FirebaseUser user;
 
+    private FirebaseFirestore db;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
+        // init view things
         appointments = findViewById(R.id.appointment_list);
         favourites = findViewById(R.id.favourites_list);
         populars = findViewById(R.id.popular_list);
         searchBar = findViewById(R.id.search_bar);
         hiUsername = findViewById(R.id.hi_username_text);
 
+        // init DB things
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
-        hiUsername.setText("Hi, " + user.getDisplayName()); // check if user == null in mainActivity.java
+        if (user == null) // check if the user is connected
+        {
+            mAuth.signOut();
+            Intent intent = new Intent(this, MainActivity.class); // run the main class
+            startActivity(intent);
+            finish();
+        }
 
+        hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
+
+        // init the RecyclerViews
         initAppointment();
         initFavourites();
         initPopular();
@@ -85,7 +103,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
+        /*Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
 
         tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10");
@@ -96,7 +114,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));
-        Log.d("MainActivity", "This is a debug message");
+        Log.d("MainActivity", "This is a debug message");*/
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -110,34 +128,49 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.appointments.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
-    private void initFavourites()
-    {
-        ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-
-        // Initialize RecyclerView and set layout manager
+    private void initFavourites() {
+        // Initialize RecyclerView
         favourites = findViewById(R.id.favourites_list);
         favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // Create and set adapter
-        favourites_add = new BarberAdapter(barbers, this , 1);
-        favourites.setAdapter(favourites_add);
+        // Fetch data from Firestore
+        db.collection("barbers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                ArrayList<Barber> barbers = new ArrayList<>();
+                QuerySnapshot querySnapshot = task.getResult();
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        Barber barber = document.toObject(Barber.class);
+                        barber.set_id(document.getId());
+                        barbers.add(barber);
+                    }
+                    // Create and set adapter
+                    BarberAdapter favourites_add = new BarberAdapter(barbers, this, 1);
+                    favourites.setAdapter(favourites_add);
 
-        // Apply ItemSpacingDecoration to add spacing between items
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+                    // Apply ItemSpacingDecoration to add spacing between items
+                    int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+                    favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+
+                    // Notify adapter of data changes
+                    favourites_add.notifyDataSetChanged();
+                } else {
+                    Log.d("MainActivity", "No barbers found");
+                }
+            } else {
+                Log.d("MainActivity", "Error getting documents: ", task.getException());
+                // Handle error if necessary
+            }
+        });
     }
 
     private void initPopular()
     {
         ArrayList<Barber> barbers = new ArrayList<>();
-        barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        /*barbers.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10"));
         barbers.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10"));
         barbers.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10"));
-        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));
+        barbers.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10"));*/
 
         // Initialize RecyclerView and set layout manager
         populars = findViewById(R.id.popular_list);
@@ -159,10 +192,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         Appointment appointment = ((AppointmentAdapter) appointments_add).GetAppointmentByPosition(position);
 
         Intent intent = new Intent(this, AppointmentInfo.class);
-        intent.putExtra("barberNameKey", appointment.getBarber().getName());
+        /*intent.putExtra("barberNameKey", appointment.getBarber().getName());
         intent.putExtra("barberPhoneKey", appointment.getBarber().getPhoneNumber());
         intent.putExtra("barberAddressKey", appointment.getBarber().getAddress());
-        intent.putExtra("barberDateKey", appointment.getDate() + " -- " + appointment.getTime());
+        intent.putExtra("barberDateKey", appointment.getDate() + " -- " + appointment.getTime());*/
 
         startActivity(intent);
         finish();
@@ -184,8 +217,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         Intent intent = new Intent(this, BarberInfo.class);
         assert barber != null; // check that "barber" is not null
         intent.putExtra("barberNameKey", barber.getName());
-        intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress());
+        /*intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
+        intent.putExtra("barberAddressKey", barber.getAddress());*/
 
         startActivity(intent);
         finish();

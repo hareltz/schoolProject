@@ -37,10 +37,10 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
     @Override
     public void onBindViewHolder(@NonNull BarberAdapter.Viewholder holder, int position) {
         holder.Name.setText(barbers.get(position).getName());
-        holder.PhoneNumber.setText(barbers.get(position).getPhoneNumber());
+        holder.PhoneNumber.setText(barbers.get(position).getPhone_number());
 
         Glide.with(holder.itemView.getContext())
-                .load(barbers.get(position).getPicAddress())
+                .load(barbers.get(position).getPicture_reference())
                 .into(holder.pic);
     }
 

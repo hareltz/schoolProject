@@ -89,7 +89,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
+       /* Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
         appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
 
         tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10");
@@ -99,7 +99,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         appointments.add(new Appointment(tempBarber, "03/04/2024", "16:00"));
 
         tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));
+        appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));*/
         Log.d("MainActivity", "This is a debug message");
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointmentScreen_search_results_list);
