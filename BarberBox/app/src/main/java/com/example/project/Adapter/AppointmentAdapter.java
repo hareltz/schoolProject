@@ -13,13 +13,22 @@ import com.example.project.Domain.Appointment;
 import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.Viewholder>
 {
     ArrayList<Appointment> appointments;
     private final IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick;
+
+    StorageReference storageReference;
 
     public AppointmentAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick) {
         this.appointments = appointments;
@@ -40,9 +49,31 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.Date.setText(Helper.getDateFromGeoPoint(appointments.get(position).getAppointmentTime()));
         holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));
 
-        Glide.with(holder.itemView.getContext())
-                .load(appointments.get(position).getBarber().getPicture_reference())
-                .into(holder.Pic);
+        String picAdd = appointments.get(position).getBarber().getPicture_reference();
+
+        storageReference = FirebaseStorage.getInstance().getReference(picAdd);
+        try {
+            File localFile = File.createTempFile(appointments.get(position).getBarber().getName().trim(), ".png");
+            storageReference.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            // Load the downloaded image into the ImageView using Glide
+                            Glide.with(holder.itemView.getContext())
+                                    .load(localFile)
+                                    .into(holder.Pic);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                            exception.printStackTrace();
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

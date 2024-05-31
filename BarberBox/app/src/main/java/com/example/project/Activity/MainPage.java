@@ -26,15 +26,21 @@ import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.os.Handler;
 import android.os.Looper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +52,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     TextView hiUsername;
     FirebaseAuth mAuth;
     FirebaseUser user;
+    StorageReference storageReference;
     ArrayList<Barber> barbers;
 
     private FirebaseFirestore db;
@@ -83,14 +90,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // init the RecyclerViews
         initBarbers();
 
-        /*Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                
-            }
-        }, 5000);*/
-
 
 
         // Set the OnEditorActionListener inside onCreate method
@@ -127,6 +126,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                         Barber barber = document.toObject(Barber.class);
                         barber.set_id(document.getId());
                         this.barbers.add(barber);
+
+
                     }
                     initAppointment();
                     initFavourites();
