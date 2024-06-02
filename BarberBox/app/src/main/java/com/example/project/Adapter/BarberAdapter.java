@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder>
@@ -39,9 +41,15 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
         holder.Name.setText(barbers.get(position).getName());
         holder.PhoneNumber.setText(barbers.get(position).getPhone_number());
 
-        Glide.with(holder.itemView.getContext())
-                .load(barbers.get(position).getPicture_reference())
-                .into(holder.pic);
+        String picAdd = barbers.get(position).getPicture_reference();
+        File localFile = Helper.getImageFile(barbers.get(position).getName().replace(" ", "_") + ".png");
+
+        if (localFile.exists())
+        {
+            Glide.with(holder.itemView.getContext())
+                    .load(localFile)
+                    .into(holder.pic);
+        }
     }
 
     @Override

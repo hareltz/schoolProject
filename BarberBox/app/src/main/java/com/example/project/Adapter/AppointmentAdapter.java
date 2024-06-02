@@ -58,30 +58,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     .load(localFile)
                     .into(holder.Pic);
         }
-
-
-
-        /*storageReference = FirebaseStorage.getInstance().getReference(picAdd);
-        try {
-            File localFile = File.createTempFile(appointments.get(position).getBarber().getName().trim(), ".png");
-            storageReference.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            // Load the downloaded image into the ImageView using Glide
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                            exception.printStackTrace();
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     @Override
