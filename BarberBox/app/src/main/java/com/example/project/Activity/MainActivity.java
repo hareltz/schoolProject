@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            End(); // if the user is connected (going to the mainPageActivity)
+            End(true); // if the user is connected (going to the mainPageActivity)
         }
 
     }
@@ -63,11 +63,20 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new RegisterFragment());
     }
 
-    // this function take the user to the main screen
-    public void End()
+    // this function take the user to the Loading screen
+    public void End(boolean main)
     {
-        Intent intent = new Intent(this, MainPage.class); // run the main class
-        startActivity(intent);
-        finish();
+        if (main)
+        {
+            Intent intent = new Intent(this, MainPage.class); // run the Loading class
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Intent intent = new Intent(this, Loading.class); // run the Loading class
+            startActivity(intent);
+            finish();
+        }
     }
 }
