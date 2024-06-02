@@ -1,6 +1,9 @@
 package com.example.project;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,6 +22,9 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -178,5 +184,39 @@ public class Helper {
     public interface BarbersDataListener {
         void onDataLoaded(ArrayList<Barber> barbers);
         void onError(String errorMessage);
+    }
+
+    public static void SaveImage(File localFile, String imageName)
+    {
+        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+        File path = Environment.getExternalStorageDirectory();
+        File dir = new File(path+"/DCIM/BARBER_BOX");
+        dir.mkdirs();
+        String picName = imageName;
+        File file = new File(dir, picName);
+
+        OutputStream out;
+
+        try
+        {
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static File getImageFile(String imageName)
+    {
+        File path = Environment.getExternalStorageDirectory();
+        File dir = new File(path + "/DCIM/BARBER_BOX");
+        File localFile = new File(dir, imageName);
+        return localFile;
     }
 }

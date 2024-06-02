@@ -1,10 +1,7 @@
 package com.example.project.Activity;
 
-import static kotlinx.coroutines.time.TimeKt.delay;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.health.connect.datatypes.SleepSessionRecord;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +24,7 @@ import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,9 +34,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import android.os.Handler;
-import android.os.Looper;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,7 +84,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
 
         // init the RecyclerViews
-        initBarbers();
+        FetchData();
 
 
 
@@ -115,19 +111,47 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         finish();
     }
 
-    private void initBarbers()
+    private void FetchData()
     {
         // Fetch data from Firestore
         db.collection("barbers").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 if (querySnapshot != null && !querySnapshot.isEmpty()) {
+
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         Barber barber = document.toObject(Barber.class);
                         barber.set_id(document.getId());
                         this.barbers.add(barber);
 
+                        String picAdd = barber.getPicture_reference();
+                        File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
 
+                        if (!file.exists()) // get the image only if the image in not exits in the device
+                        {
+                            storageReference = FirebaseStorage.getInstance().getReference(picAdd);
+                            try {
+                                File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
+
+                                storageReference.getFile(localFile)
+                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                            {
+                                                Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception exception) {
+                                                // Handle any errors
+                                                exception.printStackTrace();
+                                            }
+                                        });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                     initAppointment();
                     initFavourites();

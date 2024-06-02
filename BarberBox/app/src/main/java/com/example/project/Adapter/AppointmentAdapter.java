@@ -50,8 +50,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));
 
         String picAdd = appointments.get(position).getBarber().getPicture_reference();
+        File localFile = Helper.getImageFile(appointments.get(position).getBarber().getName().replace(" ", "_") + ".png");
 
-        storageReference = FirebaseStorage.getInstance().getReference(picAdd);
+        if (localFile.exists())
+        {
+            Glide.with(holder.itemView.getContext())
+                    .load(localFile)
+                    .into(holder.Pic);
+        }
+
+
+
+        /*storageReference = FirebaseStorage.getInstance().getReference(picAdd);
         try {
             File localFile = File.createTempFile(appointments.get(position).getBarber().getName().trim(), ".png");
             storageReference.getFile(localFile)
@@ -59,9 +69,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             // Load the downloaded image into the ImageView using Glide
-                            Glide.with(holder.itemView.getContext())
-                                    .load(localFile)
-                                    .into(holder.Pic);
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -73,7 +81,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     });
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
