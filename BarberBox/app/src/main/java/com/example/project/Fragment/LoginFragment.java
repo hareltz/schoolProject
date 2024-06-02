@@ -76,7 +76,7 @@ public class LoginFragment extends Fragment
                                         Toast.makeText(getActivity(), "Authentication succeed.",
                                                 Toast.LENGTH_SHORT).show();
                                         //FirebaseAuth.getInstance().signOut();
-                                        mainActivity.End();
+                                        mainActivity.End(false);
 
                                     } else {
                                         // If sign in fails, display a message to the user.
