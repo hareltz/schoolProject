@@ -37,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     FirebaseAuth mAuth;
     FirebaseUser user;
     StorageReference storageReference;
-    ArrayList<Barber> barbers;
-
     private FirebaseFirestore db;
 
     @SuppressLint("SetTextI18n")
@@ -70,8 +69,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-
-        barbers = new ArrayList<>();
 
         if (user == null) // check if the user is connected
         {
@@ -113,57 +110,69 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
     private void FetchData()
     {
-        // Fetch data from Firestore
-        db.collection("barbers").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot querySnapshot = task.getResult();
-                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+        if (Helper.barbers_ == null)
+        {
+            Helper.barbers_ = new ArrayList<Barber>();
+            // Fetch data from Firestore
+            db.collection("barbers").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    QuerySnapshot querySnapshot = task.getResult();
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
 
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Barber barber = document.toObject(Barber.class);
-                        barber.set_id(document.getId());
-                        this.barbers.add(barber);
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Barber barber = document.toObject(Barber.class);
+                            barber.set_id(document.getId());
+                            Helper.barbers_.add(barber);
 
-                        String picAdd = barber.getPicture_reference();
-                        File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
+                            String picAdd = barber.getPicture_reference();
+                            File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
 
-                        if (!file.exists()) // get the image only if the image in not exits in the device
-                        {
-                            storageReference = FirebaseStorage.getInstance().getReference(picAdd);
-                            try {
-                                File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
+                            if (!file.exists()) // get the image only if the image in not exits in the device
+                            {
+                                storageReference = FirebaseStorage.getInstance().getReference(picAdd);
+                                try {
+                                    File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
 
-                                storageReference.getFile(localFile)
-                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
-                                            {
-                                                Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception exception) {
-                                                // Handle any errors
-                                                exception.printStackTrace();
-                                            }
-                                        });
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                    storageReference.getFile(localFile)
+                                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                                {
+                                                    Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    // Handle any errors
+                                                    exception.printStackTrace();
+                                                }
+                                            });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
+                        initAppointment();
+                        initFavourites();
+                        initPopular();
+                    } else {
+                        Log.d("MainActivity", "No barbers found");
                     }
-                    initAppointment();
-                    initFavourites();
-                    initPopular();
                 } else {
-                    Log.d("MainActivity", "No barbers found");
+                    Log.d("MainActivity", "Error getting documents: ", task.getException());
+                    // Handle error if necessary
                 }
-            } else {
-                Log.d("MainActivity", "Error getting documents: ", task.getException());
-                // Handle error if necessary
-            }
-        });
+            });
+        }
+        else
+        {
+            initAppointment();
+            initFavourites();
+            initPopular();
+        }
+
+
     }
 
     private void initAppointment()
@@ -171,10 +180,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>();
 
-        for (Barber barber : this.barbers) {
+        for (Barber barber : Helper.barbers_)
+        {
             List<Appointment> tempAppointments = barber.getAppointments();
             for (Appointment appointment : tempAppointments)
             {
+                // change this code to give only the users appointments and also store them in an array
                 appointment.setBarber(barber);
                 appointments.add(appointment);
             }
@@ -200,14 +211,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        this.favourites_add = new BarberAdapter(this.barbers, this, 1);
+        this.favourites_add = new BarberAdapter(Helper.barbers_, this, 1);
         this.favourites.setAdapter(favourites_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         this.favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
-
-        this.favourites_add.notifyDataSetChanged();
     }
 
     private void initPopular()
@@ -216,14 +225,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        this.populars_add = new BarberAdapter(this.barbers, this, 1);
+        this.populars_add = new BarberAdapter(Helper.barbers_, this, 1);
         this.populars.setAdapter(populars_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         this.populars.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
-
-        this.populars_add.notifyDataSetChanged();
     }
 
 
@@ -257,9 +264,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         Intent intent = new Intent(this, BarberInfo.class);
         assert barber != null; // check that "barber" is not null
-        intent.putExtra("barberNameKey", barber.getName());
+        intent.putExtra("barberId", barber.get_id());
         /*intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress());*/
+        intent.putExtra("barberAddressKey", barber.getAddress());
+        Bundle b=new Bundle();
+        b.putSerializable("barber", (Serializable) barber);
+        intent.putExtras(b);*/
 
         startActivity(intent);
         finish();

@@ -13,14 +13,9 @@ import com.example.project.Domain.Appointment;
 import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.Viewholder>
@@ -46,8 +41,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(@NonNull AppointmentAdapter.Viewholder holder, int position) {
         holder.Name.setText(appointments.get(position).getBarber().getName().split(" ")[0]);
         holder.PhoneNumber.setText(appointments.get(position).getBarber().getPhone_number());
-        holder.Date.setText(Helper.getDateFromGeoPoint(appointments.get(position).getAppointmentTime()));
-        holder.Time.setText(Helper.getTimeFromGeoPoint(appointments.get(position).getAppointmentTime()));
+        holder.Date.setText(Helper.getDateFromTimestamp(appointments.get(position).getAppointmentTime()));
+        holder.Time.setText(Helper.getTimeFromTimestamp(appointments.get(position).getAppointmentTime()));
 
         String picAdd = appointments.get(position).getBarber().getPicture_reference();
         File localFile = Helper.getImageFile(appointments.get(position).getBarber().getName().replace(" ", "_") + ".png");

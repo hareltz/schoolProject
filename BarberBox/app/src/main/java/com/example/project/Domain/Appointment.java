@@ -8,10 +8,9 @@ public class Appointment
     private Barber barber;
     private Timestamp time;
     private String price;
-    private String user_id; // Field for user_id
+    private String user_id;
 
-    // Empty constructor required for Firestore
-    public Appointment() {}
+    public Appointment() {} // Empty constructor required for Firestorm
 
     public Timestamp getAppointmentTime() {
         return time;
@@ -20,6 +19,7 @@ public class Appointment
     public void setAppointmentTime(Timestamp time) {
         this.time = time;
     }
+
     public String getPrice() {
         return price;
     }
@@ -27,7 +27,6 @@ public class Appointment
     public void setPrice(String price) {
         this.price = price;
     }
-
 
     public Barber getBarber() {
         return barber;
