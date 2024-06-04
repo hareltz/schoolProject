@@ -1,19 +1,25 @@
 package com.example.project;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Environment;
 
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -21,7 +27,7 @@ public class Helper {
 
     public static final String GOOD_PASSWORD = "GOOD PASSWORD"; // Constant for a good password
     public static ArrayList<Barber> barbers_; // arrayList for the barbers
-    public static ArrayList<Appointment> appointments_; // arrayList for the barbers
+    public static ArrayList<Appointment> appointments_ = new ArrayList<>(); // arrayList for the appointments
 
     // this function check if the password is
     // 1. Password is at least 8 characters long.
@@ -94,7 +100,7 @@ public class Helper {
                 return barber;
             }
         }
-        return new Barber();
+        return null;
     }
 
     //The BarbersDataListener helps us handle when the data for barbers is loaded or if there's an error during the process.
@@ -135,5 +141,23 @@ public class Helper {
         File dir = new File(path + "/DCIM/BARBER_BOX");
         File localFile = new File(dir, imageName);
         return localFile;
+    }
+
+    public static String getAddressFromGeoPoint(GeoPoint geoPoint, Context context) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                StringBuilder addressString = new StringBuilder();
+                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                    addressString.append(address.getAddressLine(i)).append("\n");
+                }
+                return addressString.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

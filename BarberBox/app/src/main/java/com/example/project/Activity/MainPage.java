@@ -178,19 +178,22 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private void initAppointment()
     {
         // replace this with data from the db
-        ArrayList<Appointment> appointments = new ArrayList<>();
+        ArrayList<Appointment> appointments = new ArrayList<>(Helper.appointments_);
 
-        for (Barber barber : Helper.barbers_)
+        if (Helper.appointments_.isEmpty())
         {
-            List<Appointment> tempAppointments = barber.getAppointments();
-            for (Appointment appointment : tempAppointments)
+            for (Barber barber : Helper.barbers_)
             {
-                // change this code to give only the users appointments and also store them in an array
-                appointment.setBarber(barber);
-                appointments.add(appointment);
-            }
-            break;
+                List<Appointment> tempAppointments = barber.getAppointments();
+                for (Appointment appointment : tempAppointments)
+                {
+                    // change this code to give only the users appointments and also store them in an array
+                    appointment.setBarber(barber);
+                    appointments.add(appointment);
+                }
+                break;
 
+            }
         }
 
         // Initialize RecyclerView and set layout manager

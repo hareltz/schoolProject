@@ -44,7 +44,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.Date.setText(Helper.getDateFromTimestamp(appointments.get(position).getAppointmentTime()));
         holder.Time.setText(Helper.getTimeFromTimestamp(appointments.get(position).getAppointmentTime()));
 
-        String picAdd = appointments.get(position).getBarber().getPicture_reference();
         File localFile = Helper.getImageFile(appointments.get(position).getBarber().getName().replace(" ", "_") + ".png");
 
         if (localFile.exists())

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,24 +16,31 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.project.Adapter.AppointmentChooseAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationBottom;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AppointmentActivity extends AppCompatActivity implements IRecyclerViewOnAppointmentClick {
 
-    private RecyclerView appointments;
+    private RecyclerView appointmentsRV;
     private RecyclerView.Adapter appointments_add;
     private TextView name;
     AlertDialog.Builder builder;
 
-    com.google.android.material.imageview.ShapeableImageView Pic;
-
+    com.google.android.material.imageview.ShapeableImageView pic;
+    Barber barber;
+    ArrayList<Appointment> appointments = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,14 +56,24 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
 
         builder = new AlertDialog.Builder(this);
 
-        Pic = findViewById(R.id.appointmentScreen_profile_pic);
+        pic = findViewById(R.id.appointmentScreen_profile_pic);
         name = findViewById(R.id.appointmentScreen_BarberName);
 
         Intent intent = getIntent();
-        name.setText(intent.getStringExtra("nameKey"));
-        // put photo somehow
 
-        initAppointment();
+        String barberId = intent.getStringExtra("barberId");
+        barber = Helper.getBarberDataById(barberId);
+        name.setText(intent.getStringExtra(barber.getName()));
+        File localFile = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
+
+        if (localFile.exists())
+        {
+            Glide.with(this)
+                    .load(localFile)
+                    .into(pic);
+        }
+
+        initAppointment(barber);
         // get the data from the db (by barber ID)
 
     }
@@ -71,6 +87,8 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
+                        appointments.get(position).setUser_email(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                        Helper.appointments_.add(appointments.get(position));
                         startActivity(intent);
                         finish();
                     }
@@ -84,34 +102,34 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                 .show();
     }
 
-    private void initAppointment() // take here data from DB
+    private void initAppointment(Barber barber) // take here data from DB
     {
         // replace this with data from the db
-        ArrayList<Appointment> appointments = new ArrayList<>();
+        ArrayList<Appointment> tempAppointments = new ArrayList<>(barber.getAppointments());
+        Timestamp currentTimestamp = Timestamp.now();
 
-       /* Barber tempBarber = new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "01/04/2024", "14:00"));
+        // remove the taken appointments
+        for (Appointment appointment : tempAppointments)
+        {
+            if (Objects.equals(appointment.getUser_email(), "NULL") // check if the appointment in already taken
+                    && appointment.getAppointmentTime().compareTo(currentTimestamp) > 0) // check if the time of the appointment is in the future
+            {
+                appointment.setBarber(barber);
+                appointments.add(appointment);
+            }
+        }
 
-        tempBarber = new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "02/04/2024", "12:00"));
-
-        tempBarber = new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "03/04/2024", "16:00"));
-
-        tempBarber = new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10");
-        appointments.add(new Appointment(tempBarber, "03/04/2024", "18:00"));*/
-        Log.d("MainActivity", "This is a debug message");
         // Initialize RecyclerView and set layout manager
-        this.appointments = findViewById(R.id.appointmentScreen_search_results_list);
-        this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        this.appointmentsRV = findViewById(R.id.appointmentScreen_search_results_list);
+        this.appointmentsRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // Create and set adapter
         appointments_add = new AppointmentChooseAdapter(appointments, this);
-        this.appointments.setAdapter(appointments_add);
+        this.appointmentsRV.setAdapter(appointments_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        this.appointments.addItemDecoration(new ItemSpacingDecorationBottom(this, spacingInPixels));
+        this.appointmentsRV.addItemDecoration(new ItemSpacingDecorationBottom(this, spacingInPixels));
     }
 
     public void ArrowBack(View view)

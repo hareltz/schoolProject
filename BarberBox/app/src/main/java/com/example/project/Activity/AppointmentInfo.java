@@ -42,11 +42,14 @@ public class AppointmentInfo extends AppCompatActivity {
         date = findViewById(R.id.appointmentInfo_date);
 
         Intent intent = getIntent();
-        name.setText(intent.getStringExtra("barberNameKey"));
-        name2.setText(intent.getStringExtra("barberNameKey"));
-        phoneNum.setText(intent.getStringExtra("barberPhoneKey"));
-        address.setText(intent.getStringExtra("barberAddressKey"));
-        date.setText(intent.getStringExtra("barberDateKey"));
+        String barberId = intent.getStringExtra("barberId");
+        String appointmentId = intent.getStringExtra("appointmentDate");
+
+       /* name.setText();
+        name2.setText();
+        phoneNum.setText();
+        address.setText();
+        date.setText();*/
     }
 
     @SuppressLint("SetTextI18n")
