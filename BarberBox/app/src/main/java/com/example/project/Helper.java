@@ -192,8 +192,8 @@ public class Helper {
         File path = Environment.getExternalStorageDirectory();
         File dir = new File(path+"/DCIM/BARBER_BOX");
         dir.mkdirs();
-        String picName = imageName;
-        File file = new File(dir, picName);
+
+        File file = new File(dir, imageName);
 
         OutputStream out;
 
