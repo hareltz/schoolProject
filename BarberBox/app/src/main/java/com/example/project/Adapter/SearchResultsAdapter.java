@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Viewholder>
@@ -35,12 +37,16 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     public void onBindViewHolder(@NonNull SearchResultsAdapter.Viewholder holder, int position) {
         holder.Name.setText(searchResult.get(position).getName());
         holder.PhoneNumber.setText(searchResult.get(position).getPhone_number());
-        holder.Address.setText(searchResult.get(position).getLocation().toString());
         holder.Price.setText(searchResult.get(position).getAppointments().get(0).getPrice());
 
-        Glide.with(holder.itemView.getContext())
-                .load(searchResult.get(position).getPicture_reference())
-                .into(holder.Pic);
+        File localFile = Helper.getImageFile(searchResult.get(position).getName().replace(" ", "_") + ".png");
+
+        if (localFile.exists())
+        {
+            Glide.with(holder.itemView.getContext())
+                    .load(localFile)
+                    .into(holder.Pic);
+        }
     }
 
     @Override
@@ -50,7 +56,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     public static class Viewholder extends RecyclerView.ViewHolder
     {
-        TextView Name, PhoneNumber, Address, Price;
+        TextView Name, PhoneNumber, Price;
         com.google.android.material.imageview.ShapeableImageView Pic;
 
         public Viewholder(@NonNull View itemView, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick)
@@ -59,7 +65,6 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             Name = itemView.findViewById((R.id.search_results_barbers_name));
             PhoneNumber = itemView.findViewById(R.id.search_results_barbers_phone);
             Pic = itemView.findViewById(R.id.search_results_barber_pic);
-            Address = itemView.findViewById(R.id.search_results_address);
             Price = itemView.findViewById(R.id.search_results_price);
 
             itemView.setOnClickListener(new View.OnClickListener() {

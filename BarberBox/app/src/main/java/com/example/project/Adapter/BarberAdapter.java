@@ -41,7 +41,6 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
         holder.Name.setText(barbers.get(position).getName());
         holder.PhoneNumber.setText(barbers.get(position).getPhone_number());
 
-        String picAdd = barbers.get(position).getPicture_reference();
         File localFile = Helper.getImageFile(barbers.get(position).getName().replace(" ", "_") + ".png");
 
         if (localFile.exists())

@@ -14,12 +14,21 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.example.project.Domain.Appointment;
+import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.R;
+
+import java.io.File;
+import java.util.Objects;
 
 public class AppointmentInfo extends AppCompatActivity {
     TextView name, name2, phoneNum, address, date;
     AlertDialog.Builder builder;
+    com.google.android.material.imageview.ShapeableImageView pic;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,16 +49,36 @@ public class AppointmentInfo extends AppCompatActivity {
         phoneNum = findViewById(R.id.appointmentInfo_phone_number);
         address = findViewById(R.id.appointmentInfo_location);
         date = findViewById(R.id.appointmentInfo_date);
+        pic = findViewById(R.id.appointmentInfo_pic);
 
         Intent intent = getIntent();
         String barberId = intent.getStringExtra("barberId");
-        String appointmentId = intent.getStringExtra("appointmentDate");
+        String appointmentDate = intent.getStringExtra("appointmentDate");
 
-       /* name.setText();
-        name2.setText();
-        phoneNum.setText();
-        address.setText();
-        date.setText();*/
+        Barber barber = Helper.getBarberDataById(barberId);
+        Appointment appointment = new Appointment();
+
+        for (Appointment tempAppointment : barber.getAppointments())
+        {
+            if (Objects.equals(tempAppointment.getDate(), appointmentDate))
+            {
+                appointment = tempAppointment;
+            }
+        }
+
+        name.setText(barber.getName());
+        name2.setText(barber.getName());
+        phoneNum.setText(barber.getPhone_number());
+        address.setText(Helper.getAddressFromGeoPoint(barber.getLocation(), this));
+        date.setText(Helper.getDateFromTimestamp(appointment.getTime()) + " - " + Helper.getTimeFromTimestamp(appointment.getTime()));
+        File localFile = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
+
+        if (localFile.exists())
+        {
+            Glide.with(this)
+                    .load(localFile)
+                    .into(pic);
+        }
     }
 
     @SuppressLint("SetTextI18n")

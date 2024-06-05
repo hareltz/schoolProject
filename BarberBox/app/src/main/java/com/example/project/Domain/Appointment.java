@@ -11,6 +11,7 @@ public class Appointment
     private Timestamp time;
     private String price;
     private String user_email = "NULL";
+    private String documentName;
 
     public Appointment() {} // Empty constructor required for Firestorm
 
@@ -59,4 +60,11 @@ public class Appointment
         return Helper.getDateFromTimestamp(time);
     }
 
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
 }

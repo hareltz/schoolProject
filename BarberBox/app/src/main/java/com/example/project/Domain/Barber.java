@@ -11,7 +11,7 @@ public class Barber
     private String name;
     private String phone_number;
     private GeoPoint location;
-    private List<Appointment> appointments;
+    private List<Appointment> appointments_;
     private String picture_reference;
 
     public Barber() {} // Empty constructor for Firestorm
@@ -64,10 +64,10 @@ public class Barber
     }
 
     public List<Appointment> getAppointments() {
-        return appointments;
+        return appointments_;
     }
 
     public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
+        this.appointments_ = appointments;
     }
 }

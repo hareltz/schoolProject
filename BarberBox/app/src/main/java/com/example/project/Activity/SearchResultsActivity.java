@@ -13,6 +13,7 @@ import com.example.project.Adapter.BarberAdapter;
 import com.example.project.Adapter.SearchResultsAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationBottom;
 import com.example.project.Domain.Barber;
+import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 
@@ -23,30 +24,38 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
     private TextView search_results_text;
+
+    ArrayList<Barber> searchResults = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        Intent intent = getIntent();
 
-        initSearchResults();
+        String searchTerm = intent.getStringExtra("searchTerm");
+        initSearchResults(searchTerm);
 
         search_results_text = findViewById(R.id.search_results_text);
-
-        /*Intent intent = getIntent();
-        search_results_text.setText(intent.getStringExtra("searchKey"));; // Example: retrieving a string value*/
     }
 
-    private void initSearchResults()
+    private void initSearchResults(String searchTerm)
     {
         // replace this with data from the db
-        ArrayList<Barber> searchResults = new ArrayList<>();
+        ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers_);
 
-        /*searchResults.add(new Barber("harel", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel2", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel3", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel4", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));
-        searchResults.add(new Barber("harel5", "050-7870003", R.drawable.user_1, "Yish'i 10", "50₪"));*/
+        for (Barber barber : tempBarbers)
+        {
+            if (barber.getName().toLowerCase().startsWith(searchTerm.toLowerCase()))
+            {
+                searchResults.add(barber);
+            }
+        }
+
+        if (searchResults.isEmpty())
+        {
+            // show message
+        }
 
         // Initialize RecyclerView and set layout manager
         this.search_results = findViewById(R.id.search_results_list);
@@ -84,12 +93,6 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         finish();
     }
 
-    public void menuSettings(View view) {
-        /*Intent intent = new Intent(this, MainPage.class);
-        startActivity(intent);
-        finish();*/
-    }
-
     @Override
     public void onBarberClick(int position, int type)
     {
@@ -97,9 +100,7 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
 
         Intent intent = new Intent(this, BarberInfo.class);
         assert barber != null; // check that "barber" is not null
-        intent.putExtra("barberNameKey", barber.getName());
-        /*intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress());*/
+        intent.putExtra("barberId", barber.get_id());
 
         startActivity(intent);
         finish();

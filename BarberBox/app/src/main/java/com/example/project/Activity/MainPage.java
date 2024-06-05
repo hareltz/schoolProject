@@ -67,7 +67,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         // init DB things
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+            user = mAuth.getCurrentUser(); // FirebaseAuth.getInstance().getCurrentUser()
         db = FirebaseFirestore.getInstance();
 
         if (user == null) // check if the user is connected
@@ -102,8 +102,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private void EnterSearchResults()
     {
         Intent intent = new Intent(this, SearchResultsActivity.class); // run the main class
-        Log.d("debug", searchBar.getText().toString());
-        intent.putExtra("searchKey", searchBar.getText().toString()); // Example: sending a string value
+        intent.putExtra("searchTerm", searchBar.getText().toString()); // Example: sending a string value
         startActivity(intent);
         finish();
     }
@@ -180,7 +179,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // replace this with data from the db
         ArrayList<Appointment> appointments = new ArrayList<>(Helper.appointments_);
 
-        if (Helper.appointments_.isEmpty())
+        /*if (Helper.appointments_.isEmpty())
         {
             for (Barber barber : Helper.barbers_)
             {
@@ -194,7 +193,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                 break;
 
             }
-        }
+        }*/
 
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
@@ -243,10 +242,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         Appointment appointment = ((AppointmentAdapter) appointments_add).GetAppointmentByPosition(position);
 
         Intent intent = new Intent(this, AppointmentInfo.class);
-        /*intent.putExtra("barberNameKey", appointment.getBarber().getName());
-        intent.putExtra("barberPhoneKey", appointment.getBarber().getPhoneNumber());
-        intent.putExtra("barberAddressKey", appointment.getBarber().getAddress());
-        intent.putExtra("barberDateKey", appointment.getDate() + " -- " + appointment.getTime());*/
+        intent.putExtra("barberId", appointment.getBarber().get_id());
+        intent.putExtra("appointmentDate", appointment.getDate());
 
         startActivity(intent);
         finish();
@@ -284,7 +281,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
     public void menuSearch(View view) {
         Intent intent = new Intent(this, SearchResultsActivity.class); // run the main class
-        intent.putExtra("searchKey", "NULL"); // Example: sending a string value
+        intent.putExtra("searchTerm", "NULL"); // Example: sending a string value
         startActivity(intent);
         finish();
     }
@@ -293,9 +290,5 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         Intent intent = new Intent(this, AccountSettings.class); // run the main class
         startActivity(intent);
         finish();
-    }
-
-    public void menuSettings(View view) {
-
     }
 }
