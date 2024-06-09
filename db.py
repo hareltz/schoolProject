@@ -5,8 +5,6 @@ from google.cloud.firestore_v1 import GeoPoint
 from datetime import datetime, timedelta
 import calendar
 
-from google.cloud.storage import bucket
-
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate('D:/pics_android/barberbox-a4a9c-firebase-adminsdk-oqrr5-ed2a0afd96.json')
 firebase_admin.initialize_app(cred, {
@@ -68,13 +66,6 @@ barbers_data = [
         'picture_reference': 'path/to/picture'
     },
     {
-        'name': 'Barbara Taylor',
-        'phone_number': '555-789-1234',
-        'location': GeoPoint(31.4117257, 35.0818155),  # Dead Sea
-        'appointments': [],
-        'picture_reference': 'path/to/picture'
-    },
-    {
         'name': 'Robert Harris',
         'phone_number': '555-890-1234',
         'location': GeoPoint(31.768319, 35.21371),  # Jerusalem
@@ -129,28 +120,35 @@ barbers_data = [
 # Function to upload pictures to Firebase Storage
 def upload_pictures(folder_path):
     for filename in os.listdir(folder_path):
-
         if filename.endswith(('.png', '.jpg', '.jpeg')):
             print(filename)
             bucket = storage.bucket()
-
             imagePath = os.path.join(folder_path, filename)
             blob = bucket.blob(f'barber_pictures/{filename}')
             with open(imagePath, 'rb') as f:
                 blob.upload_from_file(f)
-
             print(f'Uploaded {filename} to Firebase Storage.')
-
 
 # Function to add barbers to Firestore
 def add_barbers_to_firestore(barbers):
     for barber in barbers:
         picture_name = barber['name'].lower().replace(' ', '_') + '.png'
         barber['picture_reference'] = f'barber_pictures/{picture_name}'
+        barber_data = {key: barber[key] for key in barber if key != 'appointments'}
         doc_ref = db.collection('barbers').document()
-        doc_ref.set(barber)
+        doc_ref.set(barber_data)
         print(f'Added barber: {barber["name"]} with picture reference.')
 
+# Function to add appointments as a sub-collection in Firestore
+def add_appointments_to_firestore(barber_id, appointments):
+    barber_ref = db.collection('barbers').document(barber_id)
+    appointments_ref = barber_ref.collection('appointments')
+    batch = db.batch()
+    for appointment in appointments:
+        doc_ref = appointments_ref.document()
+        batch.set(doc_ref, appointment)
+    batch.commit()
+    print(f'Added {len(appointments)} appointments to barber with ID {barber_id}.')
 
 # Function to generate appointment times for a given month
 def generate_appointments_for_month(year, month, price):
@@ -168,17 +166,14 @@ def generate_appointments_for_month(year, month, price):
                 })
     return appointments
 
-
 # Function to add appointments for each barber for the specified month
 def add_appointments_for_month(year, month, price):
     appointments = generate_appointments_for_month(year, month, price)
     barbers_ref = db.collection('barbers')
     barbers = barbers_ref.stream()
     for barber in barbers:
-        barber_ref = barbers_ref.document(barber.id)
-        barber_ref.update({'appointments': appointments})
+        add_appointments_to_firestore(barber.id, appointments)
         print(f'Added appointments for {barber.get("name")} for {calendar.month_name[month]} {year}')
-
 
 # Menu for user interaction
 def menu():
@@ -199,7 +194,6 @@ def menu():
             break
         else:
             print("Invalid choice. Please try again.")
-
 
 if __name__ == '__main__':
     menu()
