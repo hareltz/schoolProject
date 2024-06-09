@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,20 +24,13 @@ import com.example.project.Domain.Barber;
 import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class AppointmentActivity extends AppCompatActivity implements IRecyclerViewOnAppointmentClick {
 
@@ -97,7 +88,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
-                        appointments.get(position).setUser_email(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                        appointments.get(position).setUser_id(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                         Helper.appointments_.add(appointments.get(position));
 
 //                        // Get the barber document reference by barber name
@@ -144,13 +135,15 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         // remove the taken appointments
         for (Appointment appointment : tempAppointments)
         {
-            if (Objects.equals(appointment.getUser_email(), "NULL") // check if the appointment in already taken
+            if (Objects.equals(appointment.getUser_id(), "") // check if the appointment in already taken
                     && appointment.getAppointmentTime().compareTo(currentTimestamp) > 0) // check if the time of the appointment is in the future
             {
                 appointment.setBarber(barber);
                 appointments.add(appointment);
             }
         }
+
+        tempAppointments.sort(new Helper.AppointmentTimeComparator());
 
         // Initialize RecyclerView and set layout manager
         this.appointmentsRV = findViewById(R.id.appointmentScreen_search_results_list);

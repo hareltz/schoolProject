@@ -80,10 +80,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
 
-        // init the RecyclerViews
+        // init the RecyclerViews and the data from the Firestore and Storage
         FetchData();
-
-
 
         // Set the OnEditorActionListener inside onCreate method
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -121,7 +119,32 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             Barber barber = document.toObject(Barber.class);
                             barber.set_id(document.getId());
+
+                            // get the appointments
+                            db.collection("barbers")
+                                    .document(document.getId())
+                                    .collection("appointments")
+                                    .get()
+                                    .addOnCompleteListener(task2 -> {
+                                        QuerySnapshot querySnapshot2 = task2.getResult();
+                                       if (task2 != null && !querySnapshot2.isEmpty())
+                                       {
+                                           for (QueryDocumentSnapshot documentSnapshot : querySnapshot2)
+                                           {
+                                                Appointment appointment = documentSnapshot.toObject(Appointment.class);
+                                                appointment.setDocumentName(documentSnapshot.getId());
+                                                appointment.setBarber(barber);
+                                                barber.addAppointment(appointment);
+                                           }
+                                       }
+                                       else
+                                       {
+                                           Log.d("MainActivity", "Error getting documents: ", task.getException());
+                                       }
+                                    });
+
                             Helper.barbers_.add(barber);
+
 
                             String picAdd = barber.getPicture_reference();
                             File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");

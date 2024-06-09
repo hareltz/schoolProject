@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -113,7 +114,7 @@ public class Helper {
     {
         Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
         File path = Environment.getExternalStorageDirectory();
-        File dir = new File(path+"/DCIM/BARBER_BOX");
+        File dir = new File(path+"/Android/data/barber_box");
         dir.mkdirs();
 
         File file = new File(dir, imageName);
@@ -138,7 +139,7 @@ public class Helper {
     public static File getImageFile(String imageName)
     {
         File path = Environment.getExternalStorageDirectory();
-        File dir = new File(path + "/DCIM/BARBER_BOX");
+        File dir = new File(path + "/Android/data/barber_box");
         File localFile = new File(dir, imageName);
         return localFile;
     }
@@ -159,5 +160,14 @@ public class Helper {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    // Comparator to compare Appointments by their time
+    public static class AppointmentTimeComparator implements Comparator<Appointment> {
+        @Override
+        public int compare(Appointment a1, Appointment a2) {
+            return a1.getTime().compareTo(a2.getTime());
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.example.project.Domain;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Barber
@@ -11,7 +13,7 @@ public class Barber
     private String name;
     private String phone_number;
     private GeoPoint location;
-    private List<Appointment> appointments_;
+    private List<Appointment> appointments_ = new ArrayList<>();
     private String picture_reference;
 
     public Barber() {} // Empty constructor for Firestorm
@@ -20,6 +22,11 @@ public class Barber
     public Barber(String name, GeoPoint location) {
         this.name = name;
         this.location = location;
+    }
+
+    public void addAppointment(Appointment a)
+    {
+        appointments_.add(a);
     }
 
     // Getters and setters

@@ -1,17 +1,15 @@
 package com.example.project.Domain;
 
-import com.example.project.Activity.BarberInfo;
 import com.example.project.Helper;
 import com.google.firebase.Timestamp;
 
 public class Appointment
 {
-
-    private Barber barber;
-    private Timestamp time;
     private String price;
-    private String user_email = "NULL";
+    private Timestamp time;
+    private String user_id;
     private String documentName;
+    private Barber barber;
 
     public Appointment() {} // Empty constructor required for Firestorm
 
@@ -39,12 +37,12 @@ public class Appointment
         this.barber = barber;
     }
 
-    public String getUser_email() {
-        return user_email;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUser_email(String user_email) {
-        this.user_email = user_email;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public Timestamp getTime() {

@@ -141,6 +141,7 @@ def add_barbers_to_firestore(barbers):
 
 # Function to add appointments as a sub-collection in Firestore
 def add_appointments_to_firestore(barber_id, appointments):
+    appointments = sorted(appointments, key=lambda x: x['time'])  # Sort appointments by time
     barber_ref = db.collection('barbers').document(barber_id)
     appointments_ref = barber_ref.collection('appointments')
     batch = db.batch()
@@ -149,6 +150,7 @@ def add_appointments_to_firestore(barber_id, appointments):
         batch.set(doc_ref, appointment)
     batch.commit()
     print(f'Added {len(appointments)} appointments to barber with ID {barber_id}.')
+
 
 # Function to generate appointment times for a given month
 def generate_appointments_for_month(year, month, price):
