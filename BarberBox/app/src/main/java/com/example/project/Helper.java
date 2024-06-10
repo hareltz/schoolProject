@@ -1,11 +1,13 @@
 package com.example.project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Environment;
 
 import com.example.project.Domain.Appointment;
@@ -29,6 +31,15 @@ public class Helper {
     public static final String GOOD_PASSWORD = "GOOD PASSWORD"; // Constant for a good password
     public static ArrayList<Barber> barbers_; // arrayList for the barbers
     public static ArrayList<Appointment> appointments_ = new ArrayList<>(); // arrayList for the appointments
+
+    /*public static void openLocationInGoogleMaps(double latitude, double longitude) {
+        Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
+    }*/
 
     // this function check if the password is
     // 1. Password is at least 8 characters long.

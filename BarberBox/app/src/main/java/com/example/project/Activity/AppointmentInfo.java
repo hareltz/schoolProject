@@ -3,9 +3,12 @@ package com.example.project.Activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -19,6 +22,12 @@ import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.example.project.Helper;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.util.Objects;
@@ -27,6 +36,8 @@ public class AppointmentInfo extends AppCompatActivity {
     TextView name, name2, phoneNum, address, date;
     AlertDialog.Builder builder;
     com.google.android.material.imageview.ShapeableImageView pic;
+    private Barber barber = new Barber();
+    private Appointment appointment = new Appointment();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -55,8 +66,8 @@ public class AppointmentInfo extends AppCompatActivity {
         String barberId = intent.getStringExtra("barberId");
         String appointmentDate = intent.getStringExtra("appointmentDate");
 
-        Barber barber = Helper.getBarberDataById(barberId);
-        Appointment appointment = new Appointment();
+        barber = Helper.getBarberDataById(barberId);
+        appointment = new Appointment();
 
         for (Appointment tempAppointment : barber.getAppointments())
         {
@@ -89,7 +100,41 @@ public class AppointmentInfo extends AppCompatActivity {
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        // Get the barber document reference by barber name
+                        DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
+
+                        // Get the appointment document reference by timestamp under the barber's appointments collection
+                        DocumentReference appointmentRef = barberRef.collection("appointments").document(appointment.getDocumentName());
+
+                        appointmentRef
+                                .update("user_id", "")
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task)
+                                    {
+                                        Toast.makeText(AppointmentInfo.this, "The appointment was successfully cancelled!", Toast.LENGTH_SHORT).show();
+
+                                        for (Appointment tempAppointment : barber.getAppointments())
+                                        {
+                                            if (Objects.equals(tempAppointment, appointment))
+                                            {
+                                                tempAppointment.setUser_id("");
+                                                break;
+                                            }
+                                        }
+                                        barber.getAppointments().remove(appointment);
+                                        Helper.appointments_.remove(appointment);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(AppointmentInfo.this, "Problem canceling the appointment, contact support", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                         Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
                         startActivity(intent);
                         finish();
@@ -109,5 +154,23 @@ public class AppointmentInfo extends AppCompatActivity {
         Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
+    }
+
+    // this function open the location on google maps
+    public void locationClick(View view)
+    {
+        double latitude = appointment.getBarber().getLocation().getLatitude();
+        double longitude = appointment.getBarber().getLocation().getLongitude();
+
+        // URI -> Indicates the protocol to be used to access the resource (e.g., http, https, ftp, mailto, file, geo).
+        Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude); // create Uniform Resource Identifier
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps"); // Set the package to ensure the Intent is handled by Google Maps app
+        if (mapIntent.resolveActivity(getPackageManager()) != null) // Check if there is an activity that can handle this Intent
+        {
+            // Start the activity to open Google Maps with the specified location
+            startActivity(mapIntent);
+        }
+
     }
 }

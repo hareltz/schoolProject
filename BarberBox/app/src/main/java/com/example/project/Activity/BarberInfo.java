@@ -2,6 +2,7 @@ package com.example.project.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -76,5 +77,23 @@ public class BarberInfo extends AppCompatActivity {
         Intent intent = new Intent(this, MainPage.class); // run the main class
         startActivity(intent);
         finish();
+    }
+
+    // this function open the location on google maps
+    public void locationClick(View view)
+    {
+        double latitude = barber.getLocation().getLatitude();
+        double longitude = barber.getLocation().getLongitude();
+
+        // URI -> Indicates the protocol to be used to access the resource (e.g., http, https, ftp, mailto, file, geo).
+        Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude); // create Uniform Resource Identifier
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps"); // Set the package to ensure the Intent is handled by Google Maps app
+        if (mapIntent.resolveActivity(getPackageManager()) != null) // Check if there is an activity that can handle this Intent
+        {
+            // Start the activity to open Google Maps with the specified location
+            startActivity(mapIntent);
+        }
+
     }
 }

@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -24,8 +26,13 @@ import com.example.project.Domain.Barber;
 import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,27 +98,27 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                         appointments.get(position).setUser_id(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                         Helper.appointments_.add(appointments.get(position));
 
-//                        // Get the barber document reference by barber name
-//                        DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
-//
-//                        // Get the appointment document reference by timestamp under the barber's appointments collection
-//                        DocumentReference appointmentRef = barberRef.collection("appointments").document(appointments.get(position).toString());
-//
-//                        appointmentRef
-//                                .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getEmail())
-//                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task)
-//                                            {
-//
-//                                            }
-//                                        })
-//                                        .addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//
-//                                            }
-//                                        });
+                        // Get the barber document reference by barber name
+                        DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
+
+                        // Get the appointment document reference by timestamp under the barber's appointments collection
+                        DocumentReference appointmentRef = barberRef.collection("appointments").document(appointments.get(position).getDocumentName());
+
+                        appointmentRef
+                                .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task)
+                                            {
+                                                Toast.makeText(AppointmentActivity.this, "The appointment was successfully made!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(AppointmentActivity.this, "Appointment declined, contact support", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
                         startActivity(intent);
                         finish();

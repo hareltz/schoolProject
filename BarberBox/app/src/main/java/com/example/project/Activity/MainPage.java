@@ -111,7 +111,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         {
             Helper.barbers_ = new ArrayList<Barber>();
             // Fetch data from Firestore
-            db.collection("barbers").get().addOnCompleteListener(task -> {
+            db.collection("barbers").get()
+                    .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     if (querySnapshot != null && !querySnapshot.isEmpty()) {
@@ -119,30 +120,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             Barber barber = document.toObject(Barber.class);
                             barber.set_id(document.getId());
-
-                            // get the appointments
-                            db.collection("barbers")
-                                    .document(document.getId())
-                                    .collection("appointments")
-                                    .get()
-                                    .addOnCompleteListener(task2 -> {
-                                        QuerySnapshot querySnapshot2 = task2.getResult();
-                                       if (task2 != null && !querySnapshot2.isEmpty())
-                                       {
-                                           for (QueryDocumentSnapshot documentSnapshot : querySnapshot2)
-                                           {
-                                                Appointment appointment = documentSnapshot.toObject(Appointment.class);
-                                                appointment.setDocumentName(documentSnapshot.getId());
-                                                appointment.setBarber(barber);
-                                                barber.addAppointment(appointment);
-                                           }
-                                       }
-                                       else
-                                       {
-                                           Log.d("MainActivity", "Error getting documents: ", task.getException());
-                                       }
-                                    });
-
                             Helper.barbers_.add(barber);
 
 
@@ -175,6 +152,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                                 }
                             }
                         }
+
                         initAppointment();
                         initFavourites();
                         initPopular();
@@ -199,22 +177,18 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
     private void initAppointment()
     {
-        // replace this with data from the db
-        ArrayList<Appointment> appointments = new ArrayList<>(Helper.appointments_);
-
-        /*if (Helper.appointments_.isEmpty())
+       /* // go over all the appointments and add the user's appointments
+        if (Helper.appointments_.isEmpty())
         {
             for (Barber barber : Helper.barbers_)
             {
-                List<Appointment> tempAppointments = barber.getAppointments();
-                for (Appointment appointment : tempAppointments)
+                for (Appointment appointment : barber.getAppointments())
                 {
-                    // change this code to give only the users appointments and also store them in an array
-                    appointment.setBarber(barber);
-                    appointments.add(appointment);
+                    if (appointment.getUser_id() == FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                    {
+                        Helper.appointments_.add(appointment);
+                    }
                 }
-                break;
-
             }
         }*/
 
@@ -223,7 +197,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Create and set adapter
-        appointments_add = new AppointmentAdapter(appointments, this);
+        appointments_add = new AppointmentAdapter(Helper.appointments_, this);
         this.appointments.setAdapter(appointments_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
