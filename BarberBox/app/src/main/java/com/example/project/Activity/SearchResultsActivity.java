@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.project.Adapter.BarberAdapter;
 import com.example.project.Adapter.SearchResultsAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationBottom;
 import com.example.project.Domain.Barber;
@@ -23,7 +22,7 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
 
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
-    private TextView search_results_text;
+    TextView search_results_text, errorMsg;
 
     ArrayList<Barber> searchResults = new ArrayList<>();
 
@@ -33,16 +32,25 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         setContentView(R.layout.activity_search_results);
         Intent intent = getIntent();
 
+        search_results_text = findViewById(R.id.search_results_text);
+        errorMsg = findViewById(R.id.search_results_error);
+
         String searchTerm = intent.getStringExtra("searchTerm");
         initSearchResults(searchTerm);
-
-        search_results_text = findViewById(R.id.search_results_text);
     }
 
     private void initSearchResults(String searchTerm)
     {
         // replace this with data from the db
         ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers_);
+
+        if (searchTerm.isEmpty() || searchTerm == "")
+        {
+            errorMsg.setText("You have to search something\n To get result enter something");
+            errorMsg.setVisibility(View.VISIBLE);
+
+            return;
+        }
 
         for (Barber barber : tempBarbers)
         {
@@ -54,7 +62,10 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
 
         if (searchResults.isEmpty())
         {
-            // show message
+            errorMsg.setText("There in no barber\n With such a name.");
+            errorMsg.setVisibility(View.VISIBLE);
+
+            return;
         }
 
         // Initialize RecyclerView and set layout manager
@@ -68,6 +79,8 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         this.search_results.addItemDecoration(new ItemSpacingDecorationBottom(this, spacingInPixels));
+
+        search_results_text.setText("there is: " + searchResults.size() + " results.");
     }
 
     public void ArrowBack(View view)

@@ -37,16 +37,14 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
     private RecyclerView appointments,favourites, populars;
     private RecyclerView.Adapter appointments_add, favourites_add, populars_add;
     EditText searchBar;
-    TextView hiUsername;
+    TextView hiUsername, appointmentMsg, popularMsg, favouritesMsg;
     FirebaseAuth mAuth;
     FirebaseUser user;
     StorageReference storageReference;
@@ -64,6 +62,9 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         populars = findViewById(R.id.popular_list);
         searchBar = findViewById(R.id.search_bar);
         hiUsername = findViewById(R.id.hi_username_text);
+        appointmentMsg = findViewById(R.id.noAppointments);
+        favouritesMsg = findViewById(R.id.noFavourrites);
+        popularMsg = findViewById(R.id.noPopular);
 
         // init DB things
         mAuth = FirebaseAuth.getInstance();
@@ -110,6 +111,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         if (Helper.barbers_ == null)
         {
             Helper.barbers_ = new ArrayList<Barber>();
+
+
             // Fetch data from Firestore
             db.collection("barbers").get()
                     .addOnCompleteListener(task -> {
@@ -122,6 +125,29 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                             barber.set_id(document.getId());
                             Helper.barbers_.add(barber);
 
+                            // get the appointments
+                            db.collection("barbers")
+                                    .document(document.getId())
+                                    .collection("appointments")
+                                    .get()
+                                    .addOnCompleteListener(task1 -> {
+                                        QuerySnapshot appointmentsQuery = task1.getResult();
+                                        if (task1 != null)
+                                        {
+                                            for (QueryDocumentSnapshot appointment : appointmentsQuery)
+                                            {
+                                                Appointment tempAppointment = appointment.toObject(Appointment.class);
+                                                tempAppointment.setDocumentName(appointment.getId());
+                                                tempAppointment.setBarber(barber);
+                                                barber.addAppointment(tempAppointment);
+
+                                                if (tempAppointment.getUser_id() == user.getEmail())
+                                                {
+                                                    Helper.appointments_.add(tempAppointment);
+                                                }
+                                            }
+                                        }
+                                    });
 
                             String picAdd = barber.getPicture_reference();
                             File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
@@ -196,6 +222,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        if (Helper.appointments_.isEmpty())
+        {
+            appointmentMsg.setVisibility(View.VISIBLE);
+        }
+
         // Create and set adapter
         appointments_add = new AppointmentAdapter(Helper.appointments_, this);
         this.appointments.setAdapter(appointments_add);
@@ -208,6 +239,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     private void initFavourites() {
         this.favourites = findViewById(R.id.favourites_list);
         this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        if (Helper.barbers_.isEmpty()) // change to the real list
+        {
+            appointmentMsg.setVisibility(View.VISIBLE);
+        }
 
         // Create and set adapter
         this.favourites_add = new BarberAdapter(Helper.barbers_, this, 1);
@@ -223,6 +259,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.populars = findViewById(R.id.popular_list);
         this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        if (Helper.barbers_.isEmpty()) // change to the real list
+        {
+            appointmentMsg.setVisibility(View.VISIBLE);
+        }
         // Create and set adapter
         this.populars_add = new BarberAdapter(Helper.barbers_, this, 1);
         this.populars.setAdapter(populars_add);
@@ -262,11 +302,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         Intent intent = new Intent(this, BarberInfo.class);
         assert barber != null; // check that "barber" is not null
         intent.putExtra("barberId", barber.get_id());
-        /*intent.putExtra("barberPhoneKey", barber.getPhoneNumber());
-        intent.putExtra("barberAddressKey", barber.getAddress());
-        Bundle b=new Bundle();
-        b.putSerializable("barber", (Serializable) barber);
-        intent.putExtras(b);*/
 
         startActivity(intent);
         finish();
