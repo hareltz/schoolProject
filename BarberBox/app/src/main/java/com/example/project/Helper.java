@@ -138,8 +138,6 @@ public class Helper {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
-
-
         }
         catch(Exception e)
         {

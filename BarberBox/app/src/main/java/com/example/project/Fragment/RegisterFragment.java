@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.project.Activity.MainActivity;
 import com.example.project.Helper;
@@ -99,7 +97,7 @@ public class RegisterFragment extends Fragment {
                                             }
 
                                             //FirebaseAuth.getInstance().signOut();
-                                            mainActivity.End(false);
+                                            mainActivity.toLoading();
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Toast.makeText(getActivity(), "Authentication failed.",

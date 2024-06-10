@@ -15,7 +15,6 @@ import com.example.project.Fragment.RegisterFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            End(true); // if the user is connected (going to the mainPageActivity)
+            toLoading(); // if the user is connected (going to the LoadingActivity)
         }
 
     }
@@ -64,19 +63,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // this function take the user to the Loading screen
-    public void End(boolean main)
+    public void toLoading()
     {
-        if (main)
-        {
-            Intent intent = new Intent(this, MainPage.class); // run the Loading class
-            startActivity(intent);
-            finish();
-        }
-        else
-        {
-            Intent intent = new Intent(this, Loading.class); // run the Loading class
-            startActivity(intent);
-            finish();
-        }
+
+        Intent intent = new Intent(this, Loading.class); // run the Loading class
+        startActivity(intent);
+        finish();
     }
 }

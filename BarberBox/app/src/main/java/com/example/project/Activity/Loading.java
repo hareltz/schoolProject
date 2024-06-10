@@ -34,6 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class Loading extends AppCompatActivity {
@@ -52,36 +54,36 @@ public class Loading extends AppCompatActivity {
             return insets;
         });
 
-        Handler handler = new Handler();
+        /*Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run()
             {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                {
-                    if (ActivityCompat.checkSelfPermission(Loading.this,
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                    {
-                        ActivityCompat.requestPermissions(Loading.this,
-                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
-                    }
 
-                    else
-                    {
-                        fetchImagesAndEnd();
-                    }
-
-                    if (ActivityCompat.checkSelfPermission(Loading.this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                    {
-                        ActivityCompat.requestPermissions(Loading.this,
-                                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
-                    }
-                }
 
             }
-        }, 4000);
+        }, 4000);*/
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (ActivityCompat.checkSelfPermission(Loading.this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(Loading.this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
+            }
+            else
+            {
+                fetchImages();
+            }
+
+            if (ActivityCompat.checkSelfPermission(Loading.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(Loading.this,
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
+            }
+        }
     }
 
     @Override
@@ -90,22 +92,14 @@ public class Loading extends AppCompatActivity {
 
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE)
         {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) // checks if permission granted
-            {
-                fetchImagesAndEnd();
-            }
-            else
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission granted
             {
                 Toast.makeText(this, "Storage write permission is denied, please allow write permission to get image", Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == READ_EXTERNAL_STORAGE_CODE)
         {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) // checks if permission granted
-            {
-
-            }
-            else
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission granted
             {
                 Toast.makeText(this, "Storage read permission is denied, please allow read permission to get image", Toast.LENGTH_SHORT).show();
             }
@@ -135,53 +129,105 @@ public class Loading extends AppCompatActivity {
     private void fetchImages() {
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ArrayList<Barber> barbers = new ArrayList<>();
-        db.collection("barbers").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot querySnapshot = task.getResult();
-                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+        Helper.barbers_ = new ArrayList<Barber>();
+        Helper.appointments_ = new ArrayList<Appointment>();
 
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Barber barber = document.toObject(Barber.class);
-                        barber.set_id(document.getId());
-                        barbers.add(barber);
+        final int[] imagesCounter = {0};
+        final int[] appointmentsCounter = {0};
 
-                        String picAdd = barber.getPicture_reference();
-                        File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
+        // Fetch data from Firestore
+        db.collection("barbers").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            List<QueryDocumentSnapshot> tempList = new ArrayList<>();
+                            querySnapshot.forEach(tempList::add);
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                Barber barber = document.toObject(Barber.class);
+                                barber.set_id(document.getId());
+                                Helper.barbers_.add(barber);
 
-                        if (!file.exists()) // get the image only if the image in not exits in the device
-                        {
-                            StorageReference storageReference = FirebaseStorage.getInstance().getReference(picAdd);
-                            try {
-                                File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
-
-                                storageReference.getFile(localFile)
-                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                // get the appointments
+                                db.collection("barbers")
+                                        .document(document.getId())
+                                        .collection("appointments")
+                                        .get()
+                                        .addOnCompleteListener(task1 -> {
+                                            QuerySnapshot appointmentsQuery = task1.getResult();
+                                            if (task1 != null && appointmentsQuery != null && !appointmentsQuery.isEmpty())
                                             {
-                                                Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception exception) {
-                                                // Handle any errors
-                                                exception.printStackTrace();
+                                                for (QueryDocumentSnapshot appointment : appointmentsQuery)
+                                                {
+                                                    Appointment tempAppointment = appointment.toObject(Appointment.class);
+                                                    tempAppointment.setDocumentName(appointment.getId());
+                                                    tempAppointment.setBarber(barber);
+                                                    barber.addAppointment(tempAppointment);
+
+                                                    if (Objects.equals(tempAppointment.getUser_id(), FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                                                    {
+                                                        Helper.appointments_.add(tempAppointment);
+                                                    }
+
+                                                    appointmentsCounter[0]++;
+                                                    if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
+                                                    {
+                                                        end();
+                                                    }
+                                                }
+
                                             }
                                         });
-                            } catch (IOException e) {
-                                e.printStackTrace();
+
+                                String picAdd = barber.getPicture_reference();
+                                File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
+
+                                if (!file.exists()) // get the image only if the image in not exits in the device
+                                {
+                                    StorageReference storageReference = FirebaseStorage.getInstance().getReference(picAdd);
+                                    try {
+                                        File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
+
+                                        storageReference.getFile(localFile)
+                                                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                                    {
+                                                        Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
+                                                        imagesCounter[0]++;
+                                                        if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
+                                                        {
+                                                            end();
+                                                        }
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        // Handle any errors
+                                                        exception.printStackTrace();
+                                                    }
+                                                });
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                else
+                                {
+                                    imagesCounter[0]++;
+                                    if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
+                                    {
+                                        end();
+                                    }
+                                }
                             }
+                        } else {
+                            Log.d("Loading", "No barbers found");
                         }
+                    } else {
+                        Log.d("Loading", "Error getting documents: ", task.getException());
+                        // Handle error if necessary
                     }
-                } else {
-                    Log.d("MainActivity", "No barbers found");
-                }
-            } else {
-                Log.d("MainActivity", "Error getting documents: ", task.getException());
-                // Handle error if necessary
-            }
-        });
+                });
     }
 }

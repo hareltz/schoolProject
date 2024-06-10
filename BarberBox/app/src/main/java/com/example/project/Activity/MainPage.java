@@ -89,7 +89,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
 
         // init the RecyclerViews and the data from the Firestore and Storage
-        FetchData();
+        //FetchData();
+        initAppointment();
+        initFavourites();
+        initPopular();
 
         // Set the OnEditorActionListener inside onCreate method
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -233,7 +236,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if (Helper.appointments_.isEmpty())
+
+        if (Helper.appointments_ == null)
+        {
+            return;
+        }
+        else if (Helper.appointments_.isEmpty())
         {
             appointmentMsg.setVisibility(View.VISIBLE);
             return;
@@ -254,7 +262,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.favourites = findViewById(R.id.favourites_list);
         this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if (Helper.barbers_.isEmpty()) // change to the real list
+        if (Helper.barbers_ == null)
+        {
+            return;
+        }
+        else if (Helper.barbers_.isEmpty()) // change to the real list
         {
             appointmentMsg.setVisibility(View.VISIBLE);
         }
@@ -273,7 +285,11 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.populars = findViewById(R.id.popular_list);
         this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if (Helper.barbers_.isEmpty()) // change to the real list
+        if (Helper.barbers_ == null)
+        {
+            return;
+        }
+        else if (Helper.barbers_.isEmpty()) // change to the real list
         {
             appointmentMsg.setVisibility(View.VISIBLE);
         }
