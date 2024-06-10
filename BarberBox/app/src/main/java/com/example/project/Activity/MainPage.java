@@ -38,6 +38,10 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
@@ -49,6 +53,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     FirebaseUser user;
     StorageReference storageReference;
     private FirebaseFirestore db;
+
+    //Lock lock = new ReentrantLock();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -70,6 +76,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser(); // FirebaseAuth.getInstance().getCurrentUser()
         db = FirebaseFirestore.getInstance();
+        //lock.lock();
 
         if (user == null) // check if the user is connected
         {
@@ -132,18 +139,32 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                                     .get()
                                     .addOnCompleteListener(task1 -> {
                                         QuerySnapshot appointmentsQuery = task1.getResult();
+                                        List<QueryDocumentSnapshot> tempList = new ArrayList<>();
+                                        appointmentsQuery.forEach(tempList::add);
+
                                         if (task1 != null)
                                         {
                                             for (QueryDocumentSnapshot appointment : appointmentsQuery)
                                             {
-                                                Appointment tempAppointment = appointment.toObject(Appointment.class);
-                                                tempAppointment.setDocumentName(appointment.getId());
-                                                tempAppointment.setBarber(barber);
-                                                barber.addAppointment(tempAppointment);
-
-                                                if (tempAppointment.getUser_id() == user.getEmail())
+                                                try
                                                 {
-                                                    Helper.appointments_.add(tempAppointment);
+                                                    Appointment tempAppointment = appointment.toObject(Appointment.class);
+                                                    tempAppointment.setDocumentName(appointment.getId());
+                                                    tempAppointment.setBarber(barber);
+                                                    barber.addAppointment(tempAppointment);
+
+                                                    if (Objects.equals(tempAppointment.getUser_id(), user.getEmail()))
+                                                    {
+                                                        Helper.appointments_.add(tempAppointment);
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    if (appointment.equals(tempList.get(tempList.size() - 1))) // if it's the last barber
+                                                    {
+                                                        //lock.unlock();  // release the lock
+                                                        initAppointment();
+                                                    }
                                                 }
                                             }
                                         }
@@ -178,8 +199,6 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
                                 }
                             }
                         }
-
-                        initAppointment();
                         initFavourites();
                         initPopular();
                     } else {
@@ -203,20 +222,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
     private void initAppointment()
     {
-       /* // go over all the appointments and add the user's appointments
-        if (Helper.appointments_.isEmpty())
-        {
-            for (Barber barber : Helper.barbers_)
-            {
-                for (Appointment appointment : barber.getAppointments())
-                {
-                    if (appointment.getUser_id() == FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                    {
-                        Helper.appointments_.add(appointment);
-                    }
-                }
-            }
-        }*/
+        // clear the appointment RecyclerView
+        /*ArrayList<Appointment> tempAppointments = new ArrayList<>(Helper.appointments_);
+        Helper.appointments_.clear();
+        appointments_add.notifyDataSetChanged();
+
+        Helper.appointments_ = new ArrayList<>(tempAppointments);*/
 
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
@@ -225,6 +236,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         if (Helper.appointments_.isEmpty())
         {
             appointmentMsg.setVisibility(View.VISIBLE);
+            return;
         }
 
         // Create and set adapter
@@ -234,6 +246,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         this.appointments.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+
+
     }
 
     private void initFavourites() {
