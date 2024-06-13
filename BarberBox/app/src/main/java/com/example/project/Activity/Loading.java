@@ -1,6 +1,9 @@
 package com.example.project.Activity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,10 +16,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.project.AlarmReceiver;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.example.project.Helper;
@@ -34,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -42,6 +48,7 @@ public class Loading extends AppCompatActivity {
 
         private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
         private static final int READ_EXTERNAL_STORAGE_CODE = 2;
+        private static final int NOTIFICATIONS_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +61,6 @@ public class Loading extends AppCompatActivity {
             return insets;
         });
 
-        /*Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run()
-            {
-
-
-            }
-        }, 4000);*/
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (ActivityCompat.checkSelfPermission(Loading.this,
@@ -72,10 +69,6 @@ public class Loading extends AppCompatActivity {
                 ActivityCompat.requestPermissions(Loading.this,
                         new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
             }
-            else
-            {
-                fetchImages();
-            }
 
             if (ActivityCompat.checkSelfPermission(Loading.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -83,6 +76,14 @@ public class Loading extends AppCompatActivity {
                 ActivityCompat.requestPermissions(Loading.this,
                         new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATIONS_CODE);
+                }
+            }
+            setAlarm();
+            fetchImages();
         }
     }
 
@@ -92,30 +93,25 @@ public class Loading extends AppCompatActivity {
 
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE)
         {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission granted
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
             {
                 Toast.makeText(this, "Storage write permission is denied, please allow write permission to get image", Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == READ_EXTERNAL_STORAGE_CODE)
         {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission granted
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
             {
                 Toast.makeText(this, "Storage read permission is denied, please allow read permission to get image", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    // This function fetches images and then proceeds to the main screen
-    private void fetchImagesAndEnd() {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            // Fetch images asynchronously
-            fetchImages();
-        });
-
-        // Wait for fetchImages() to complete, then execute end()
-        future.join();
-        end();
+        else if (requestCode == NOTIFICATIONS_CODE)
+        {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
+            {
+                Toast.makeText(this, "Notifications permission is denied, please allow permission.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // This function take the user to the main screen
@@ -126,7 +122,8 @@ public class Loading extends AppCompatActivity {
     }
 
     // This function will fetch the images from Firebase
-    private void fetchImages() {
+    private void fetchImages()
+    {
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Helper.barbers_ = new ArrayList<Barber>();
@@ -229,5 +226,20 @@ public class Loading extends AppCompatActivity {
                         // Handle error if necessary
                     }
                 });
+    }
+
+    private void setAlarm() {
+        // Set the time to trigger the notification (e.g., 5 seconds from now)
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.SECOND, 5);
+
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
     }
 }

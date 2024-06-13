@@ -40,7 +40,7 @@ public class AppointmentInfo extends AppCompatActivity {
     private Appointment appointment = new Appointment();
     String appointmentDocumentName;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
