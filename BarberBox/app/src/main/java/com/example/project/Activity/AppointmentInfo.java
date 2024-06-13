@@ -38,6 +38,7 @@ public class AppointmentInfo extends AppCompatActivity {
     com.google.android.material.imageview.ShapeableImageView pic;
     private Barber barber = new Barber();
     private Appointment appointment = new Appointment();
+    String appointmentDocumentName;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -64,14 +65,14 @@ public class AppointmentInfo extends AppCompatActivity {
 
         Intent intent = getIntent();
         String barberId = intent.getStringExtra("barberId");
-        String appointmentDate = intent.getStringExtra("appointmentDate");
+        appointmentDocumentName = intent.getStringExtra("appointmentDocumentName");
 
         barber = Helper.getBarberDataById(barberId);
         appointment = new Appointment();
 
         for (Appointment tempAppointment : barber.getAppointments())
         {
-            if (Objects.equals(tempAppointment.getDate(), appointmentDate))
+            if (Objects.equals(tempAppointment.getDocumentName(), appointmentDocumentName))
             {
                 appointment = tempAppointment;
             }
@@ -118,14 +119,25 @@ public class AppointmentInfo extends AppCompatActivity {
 
                                         for (Appointment tempAppointment : barber.getAppointments())
                                         {
-                                            if (Objects.equals(tempAppointment, appointment))
+                                            if (Objects.equals(tempAppointment.getDocumentName(), appointmentDocumentName))
                                             {
                                                 tempAppointment.setUser_id("");
                                                 break;
                                             }
                                         }
-                                        barber.getAppointments().remove(appointment);
-                                        Helper.appointments_.remove(appointment);
+                                        barber.changeAppointmentUserId(appointmentDocumentName);
+
+                                        for (Appointment a : Helper.appointments_)
+                                        {
+                                            if (Objects.equals(a.getDocumentName(), appointmentDocumentName))
+                                            {
+                                                Helper.appointments_.remove(a);
+                                                Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
+                                                startActivity(intent);
+                                                finish();
+                                                break;
+                                            }
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -135,9 +147,7 @@ public class AppointmentInfo extends AppCompatActivity {
                                     }
                                 });
 
-                        Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
-                        startActivity(intent);
-                        finish();
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

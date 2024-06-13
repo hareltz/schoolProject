@@ -310,7 +310,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         Intent intent = new Intent(this, AppointmentInfo.class);
         intent.putExtra("barberId", appointment.getBarber().get_id());
-        intent.putExtra("appointmentDate", appointment.getDate());
+        intent.putExtra("appointmentDocumentName", appointment.getDocumentName());
 
         startActivity(intent);
         finish();

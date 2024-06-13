@@ -4,6 +4,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Barber {
     private String _id;
@@ -23,6 +24,16 @@ public class Barber {
 
     public void addAppointment(Appointment a) {
         appointments_.add(a);
+    }
+    public void changeAppointmentUserId(String document) {
+        for (Appointment appointment : appointments_)
+        {
+            if (Objects.equals(appointment.getDocumentName(), document))
+            {
+                appointment.setUser_id("");
+                break;
+            }
+        }
     }
 
     // Getters and setters
