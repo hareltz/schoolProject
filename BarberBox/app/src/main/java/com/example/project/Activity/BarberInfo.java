@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,14 +21,22 @@ import com.bumptech.glide.Glide;
 import com.example.project.Domain.Barber;
 import com.example.project.Helper;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BarberInfo extends AppCompatActivity {
 
     TextView name, name2, phoneNum, address;
     com.google.android.material.imageview.ShapeableImageView pic;
     Barber barber;
+    ToggleButton likeBt;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +55,7 @@ public class BarberInfo extends AppCompatActivity {
         phoneNum = findViewById(R.id.barberInfo_phone_number);
         address = findViewById(R.id.barberInfo_location);
         pic = findViewById(R.id.barberInfo_profile_pic);
+        likeBt = findViewById(R.id.barberInfo_likeBt);
 
         Intent intent = getIntent();
 
@@ -60,6 +73,11 @@ public class BarberInfo extends AppCompatActivity {
             Glide.with(this)
                     .load(localFile)
                     .into(pic);
+        }
+
+        if (Helper.favourites.containsKey(barber.get_id()))
+        {
+            likeBt.setChecked(Boolean.TRUE.equals(Helper.favourites.get(barber.get_id())));
         }
     }
 
@@ -95,5 +113,21 @@ public class BarberInfo extends AppCompatActivity {
             startActivity(mapIntent);
         }
 
+    }
+
+    public void likeOnClick(View view)
+    {
+        DocumentReference barberRef = FirebaseFirestore.getInstance().collection("favourites").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        if (likeBt.isChecked())
+        {
+            barberRef.update(barber.get_id(), true);
+            Helper.favourites.put(barber.get_id(), true);
+        }
+        else
+        {
+            barberRef.update(barber.get_id(), false);
+            Helper.favourites.put(barber.get_id(), false);
+        }
     }
 }

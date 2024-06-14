@@ -3,14 +3,12 @@ package com.example.project.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,24 +22,14 @@ import com.example.project.Helper;
 import com.example.project.Interfaces.IRecyclerViewOnAppointmentClick;
 import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
@@ -75,7 +63,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // init DB things
         mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser(); // FirebaseAuth.getInstance().getCurrentUser()
-        db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
         //lock.lock();
 
         if (user == null) // check if the user is connected
@@ -88,8 +76,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
         hiUsername.setText("Hi, " + user.getDisplayName()); // change the name in the app to the username
 
-        // init the RecyclerViews and the data from the Firestore and Storage
-        //FetchData();
+        // init the RecyclerViews and the data from the Firestore and Storage;
         initAppointment();
         initFavourites();
         initPopular();
@@ -116,139 +103,25 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         finish();
     }
 
-    private void FetchData()
-    {
-        if (Helper.barbers_ == null)
-        {
-            Helper.barbers_ = new ArrayList<Barber>();
-
-
-            // Fetch data from Firestore
-            db.collection("barbers").get()
-                    .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    QuerySnapshot querySnapshot = task.getResult();
-                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
-
-                        for (QueryDocumentSnapshot document : querySnapshot) {
-                            Barber barber = document.toObject(Barber.class);
-                            barber.set_id(document.getId());
-                            Helper.barbers_.add(barber);
-
-                            // get the appointments
-                            db.collection("barbers")
-                                    .document(document.getId())
-                                    .collection("appointments")
-                                    .get()
-                                    .addOnCompleteListener(task1 -> {
-                                        QuerySnapshot appointmentsQuery = task1.getResult();
-                                        List<QueryDocumentSnapshot> tempList = new ArrayList<>();
-                                        appointmentsQuery.forEach(tempList::add);
-
-                                        if (task1 != null)
-                                        {
-                                            for (QueryDocumentSnapshot appointment : appointmentsQuery)
-                                            {
-                                                try
-                                                {
-                                                    Appointment tempAppointment = appointment.toObject(Appointment.class);
-                                                    tempAppointment.setDocumentName(appointment.getId());
-                                                    tempAppointment.setBarber(barber);
-                                                    barber.addAppointment(tempAppointment);
-
-                                                    if (Objects.equals(tempAppointment.getUser_id(), user.getEmail()))
-                                                    {
-                                                        Helper.appointments_.add(tempAppointment);
-                                                    }
-                                                }
-                                                finally
-                                                {
-                                                    if (appointment.equals(tempList.get(tempList.size() - 1))) // if it's the last barber
-                                                    {
-                                                        //lock.unlock();  // release the lock
-                                                        initAppointment();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-
-                            String picAdd = barber.getPicture_reference();
-                            File file = Helper.getImageFile(barber.getName().replace(" ", "_") + ".png");
-
-                            if (!file.exists()) // get the image only if the image in not exits in the device
-                            {
-                                storageReference = FirebaseStorage.getInstance().getReference(picAdd);
-                                try {
-                                    File localFile = File.createTempFile(barber.getName().replace(" ", "_"), ".png");
-
-                                    storageReference.getFile(localFile)
-                                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                                @Override
-                                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
-                                                {
-                                                    Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    // Handle any errors
-                                                    exception.printStackTrace();
-                                                }
-                                            });
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        initFavourites();
-                        initPopular();
-                    } else {
-                        Log.d("MainActivity", "No barbers found");
-                    }
-                } else {
-                    Log.d("MainActivity", "Error getting documents: ", task.getException());
-                    // Handle error if necessary
-                }
-            });
-        }
-        else
-        {
-            initAppointment();
-            initFavourites();
-            initPopular();
-        }
-
-
-    }
-
     private void initAppointment()
     {
-        // clear the appointment RecyclerView
-        /*ArrayList<Appointment> tempAppointments = new ArrayList<>(Helper.appointments_);
-        Helper.appointments_.clear();
-        appointments_add.notifyDataSetChanged();
-
-        Helper.appointments_ = new ArrayList<>(tempAppointments);*/
-
         // Initialize RecyclerView and set layout manager
         this.appointments = findViewById(R.id.appointment_list);
         this.appointments.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
 
-        if (Helper.appointments_ == null)
+        if (Helper.appointments == null)
         {
             return;
         }
-        else if (Helper.appointments_.isEmpty())
+        else if (Helper.appointments.isEmpty())
         {
             appointmentMsg.setVisibility(View.VISIBLE);
             return;
         }
 
         // Create and set adapter
-        appointments_add = new AppointmentAdapter(Helper.appointments_, this);
+        appointments_add = new AppointmentAdapter(Helper.appointments, this);
         this.appointments.setAdapter(appointments_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
@@ -259,20 +132,31 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
     }
 
     private void initFavourites() {
+
         this.favourites = findViewById(R.id.favourites_list);
         this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if (Helper.barbers_ == null)
+        ArrayList<Barber> barbers = new ArrayList<>();
+
+        for (Barber barber : Helper.barbers)
         {
-            return;
+            if (Helper.favourites.containsKey(barber.get_id()))
+            {
+                if (Boolean.TRUE.equals(Helper.favourites.get(barber.get_id())))
+                {
+                    barbers.add(barber);
+                }
+            }
         }
-        else if (Helper.barbers_.isEmpty()) // change to the real list
+
+        if (barbers.isEmpty())
         {
-            appointmentMsg.setVisibility(View.VISIBLE);
+            favouritesMsg.setVisibility(View.VISIBLE);
+            return;
         }
 
         // Create and set adapter
-        this.favourites_add = new BarberAdapter(Helper.barbers_, this, 1);
+        this.favourites_add = new BarberAdapter(barbers, this, 1);
         this.favourites.setAdapter(favourites_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
@@ -285,16 +169,17 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.populars = findViewById(R.id.popular_list);
         this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if (Helper.barbers_ == null)
+        if (Helper.barbers == null)
         {
             return;
         }
-        else if (Helper.barbers_.isEmpty()) // change to the real list
+        else if (Helper.barbers.isEmpty()) // change to the real list
         {
             appointmentMsg.setVisibility(View.VISIBLE);
         }
+
         // Create and set adapter
-        this.populars_add = new BarberAdapter(Helper.barbers_, this, 1);
+        this.populars_add = new BarberAdapter(Helper.barbers, this, 2);
         this.populars.setAdapter(populars_add);
 
         // Apply ItemSpacingDecoration to add spacing between items

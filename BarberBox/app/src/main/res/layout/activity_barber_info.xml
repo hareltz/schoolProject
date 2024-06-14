@@ -49,28 +49,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
+            android:minHeight="48dp"
             android:onClick="locationClick"
             android:text="barber's location (clickable)"
             android:textSize="30dp" />
 
-        <TextView
-            android:id="@+id/makeAppointmentBT"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="15dp"
             android:layout_marginTop="30dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/default_bt"
-            android:gravity="center"
-            android:minHeight="48dp"
-            android:onClick="MakeAppointment"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="Make An Appointment"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            tools:gravity="center" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/makeAppointmentBT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/appointment_screen_choose"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:onClick="MakeAppointment"
+                android:paddingStart="40dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="40dp"
+                android:paddingBottom="5dp"
+                android:text="Make An Appointment"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:gravity="center" />
+
+            <ToggleButton
+                android:id="@+id/barberInfo_likeBt"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/like_selector"
+                android:textOff=""
+                android:textOn=""
+                android:onClick="likeOnClick"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView
@@ -91,12 +112,13 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="36dp"
+        android:onClick="ArrowBack"
         android:src="@drawable/back"
         app:layout_constraintBottom_toTopOf="@+id/barberInfo_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="ArrowBack"/>
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/barberInfo_profile_pic"

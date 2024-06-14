@@ -1,13 +1,11 @@
 package com.example.project;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Environment;
 
 import com.example.project.Domain.Appointment;
@@ -22,15 +20,35 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class Helper {
 
     public static final String GOOD_PASSWORD = "GOOD PASSWORD"; // Constant for a good password
-    public static ArrayList<Barber> barbers_; // arrayList for the barbers
-    public static ArrayList<Appointment> appointments_ = new ArrayList<>(); // arrayList for the appointments
+    public static ArrayList<Barber> barbers; // arrayList for the barbers
+
+    public static Map<String, Boolean> favourites = new HashMap<>();
+    public static ArrayList<Appointment> appointments = new ArrayList<>(); // arrayList for the appointments
+
+
+    /*private void setAlarm(Timestamp timestamp) {
+        // Convert the Firebase Timestamp to milliseconds since epoch
+        long timeInMillis = timestamp.toDate().getTime();
+
+        // Set the alarm using the converted time
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+        }
+    }*/
+
 
     /*public static void openLocationInGoogleMaps(double latitude, double longitude) {
         Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude);
@@ -105,7 +123,7 @@ public class Helper {
 
     // this function return the barber with the barberId
     public static Barber getBarberDataById(String barberId) {
-        for (Barber barber : barbers_)
+        for (Barber barber : barbers)
         {
             if (Objects.equals(barber.get_id(), barberId))
             {

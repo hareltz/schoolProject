@@ -42,7 +42,7 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     private void initSearchResults(String searchTerm)
     {
         // replace this with data from the db
-        ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers_);
+        ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers);
 
         if (searchTerm.isEmpty() || searchTerm == "")
         {

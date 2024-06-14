@@ -25,7 +25,6 @@ import com.example.project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -127,11 +126,11 @@ public class AppointmentInfo extends AppCompatActivity {
                                         }
                                         barber.changeAppointmentUserId(appointmentDocumentName);
 
-                                        for (Appointment a : Helper.appointments_)
+                                        for (Appointment a : Helper.appointments)
                                         {
                                             if (Objects.equals(a.getDocumentName(), appointmentDocumentName))
                                             {
-                                                Helper.appointments_.remove(a);
+                                                Helper.appointments.remove(a);
                                                 Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
                                                 startActivity(intent);
                                                 finish();

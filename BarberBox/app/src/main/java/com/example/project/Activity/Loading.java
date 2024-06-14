@@ -1,22 +1,15 @@
 package com.example.project.Activity;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,6 +22,7 @@ import com.example.project.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,15 +34,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 public class Loading extends AppCompatActivity {
-
-        private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
-        private static final int READ_EXTERNAL_STORAGE_CODE = 2;
-        private static final int NOTIFICATIONS_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,57 +52,8 @@ public class Loading extends AppCompatActivity {
             return insets;
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (ActivityCompat.checkSelfPermission(Loading.this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(Loading.this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
-            }
-
-            if (ActivityCompat.checkSelfPermission(Loading.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(Loading.this,
-                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATIONS_CODE);
-                }
-            }
-            setAlarm();
-            fetchImages();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == WRITE_EXTERNAL_STORAGE_CODE)
-        {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
-            {
-                Toast.makeText(this, "Storage write permission is denied, please allow write permission to get image", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == READ_EXTERNAL_STORAGE_CODE)
-        {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
-            {
-                Toast.makeText(this, "Storage read permission is denied, please allow read permission to get image", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == NOTIFICATIONS_CODE)
-        {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
-            {
-                Toast.makeText(this, "Notifications permission is denied, please allow permission.", Toast.LENGTH_SHORT).show();
-            }
-        }
+        fetchData();
+        setAlarm();
     }
 
     // This function take the user to the main screen
@@ -122,15 +64,50 @@ public class Loading extends AppCompatActivity {
     }
 
     // This function will fetch the images from Firebase
-    private void fetchImages()
+    private void fetchData()
     {
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Helper.barbers_ = new ArrayList<Barber>();
-        Helper.appointments_ = new ArrayList<Appointment>();
+        Helper.barbers = new ArrayList<Barber>();
+        Helper.appointments = new ArrayList<Appointment>();
 
         final int[] imagesCounter = {0};
         final int[] appointmentsCounter = {0};
+
+        Map<String, Object> dataToAdd = new HashMap<>();
+
+        // load the favourites data
+        db.collection("favourites")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        for (Map.Entry<String, Object> entry : document.getData().entrySet()) {
+                            if ((boolean) entry.getValue())
+                            {
+                                Helper.favourites.put(entry.getKey(), (Boolean) entry.getValue());
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(task ->
+                {
+                    // create the favorites document
+                    db.collection("favourites")
+                            .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .set(dataToAdd)
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Handle failure
+                                    Log.w("TAG", "error adding " + FirebaseAuth.getInstance().getCurrentUser().getUid() + "to favourites.", e);
+                                }
+                            });
+                });
+
+
+
 
         // Fetch data from Firestore
         db.collection("barbers").get()
@@ -143,12 +120,13 @@ public class Loading extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : querySnapshot) {
                                 Barber barber = document.toObject(Barber.class);
                                 barber.set_id(document.getId());
-                                Helper.barbers_.add(barber);
+                                Helper.barbers.add(barber);
 
                                 // get the appointments
                                 db.collection("barbers")
                                         .document(document.getId())
                                         .collection("appointments")
+                                        .orderBy("time")
                                         .get()
                                         .addOnCompleteListener(task1 -> {
                                             QuerySnapshot appointmentsQuery = task1.getResult();
@@ -161,11 +139,12 @@ public class Loading extends AppCompatActivity {
                                                     tempAppointment.setBarber(barber);
                                                     barber.addAppointment(tempAppointment);
 
-                                                    if (Objects.equals(tempAppointment.getUser_id(), FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                                                    if (Objects.equals(tempAppointment.getUser_id(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                                     {
-                                                        Helper.appointments_.add(tempAppointment);
+                                                        Helper.appointments.add(tempAppointment);
                                                     }
 
+                                                    // check if we got all the appointments and images
                                                     appointmentsCounter[0]++;
                                                     if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
                                                     {
@@ -211,6 +190,7 @@ public class Loading extends AppCompatActivity {
                                 }
                                 else
                                 {
+                                    // check if we got all the appointments and images
                                     imagesCounter[0]++;
                                     if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
                                     {

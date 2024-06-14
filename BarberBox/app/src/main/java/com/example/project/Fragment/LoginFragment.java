@@ -73,7 +73,6 @@ public class LoginFragment extends Fragment
 
                                         Toast.makeText(getActivity(), "Authentication succeed.",
                                                 Toast.LENGTH_SHORT).show();
-                                        //FirebaseAuth.getInstance().signOut();
                                         mainActivity.toLoading();
 
                                     } else {

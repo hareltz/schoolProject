@@ -112,6 +112,7 @@ barbers_data = [
         'phone_number': '555-876-5432',
         'location': GeoPoint(32.0853, 34.7818),  # Tel Aviv
         'appointments': [],
+        'rating': [],
         'picture_reference': 'path/to/picture'
     }
 ]
@@ -148,6 +149,14 @@ def add_appointments_to_firestore(barber_id, appointments):
     for appointment in appointments:
         doc_ref = appointments_ref.document()
         batch.set(doc_ref, appointment)
+        batch.commit()
+    print(f'Added {len(appointments)} appointments to barber with ID {barber_id}.')
+    
+    
+def create_rating_collection(barber_id):
+    barber_ref = db.collection('barbers').document(barber_id)
+    appointments_ref = barber_ref.collection('rating')
+    batch = db.batch()
     batch.commit()
     print(f'Added {len(appointments)} appointments to barber with ID {barber_id}.')
 

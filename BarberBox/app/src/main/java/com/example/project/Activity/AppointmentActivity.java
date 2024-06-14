@@ -36,7 +36,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 public class AppointmentActivity extends AppCompatActivity implements IRecyclerViewOnAppointmentClick {
@@ -96,7 +95,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
                         appointments.get(position).setUser_id(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                        Helper.appointments_.add(appointments.get(position));
+                        Helper.appointments.add(appointments.get(position));
 
                         // Get the barber document reference by barber name
                         DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
@@ -105,7 +104,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                         DocumentReference appointmentRef = barberRef.collection("appointments").document(appointments.get(position).getDocumentName());
 
                         appointmentRef
-                                .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                                .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task)
