@@ -24,25 +24,17 @@ import com.example.project.Interfaces.IRecyclerViewOnBarberClick;
 import com.example.project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppointmentClick, IRecyclerViewOnBarberClick {
 
-    private RecyclerView appointments,favourites, populars;
-    private RecyclerView.Adapter appointments_add, favourites_add, populars_add;
+    private RecyclerView appointments,favourites, allBarbers;
+    private RecyclerView.Adapter appointments_add, favourites_add, allBarbers_add;
     EditText searchBar;
-    TextView hiUsername, appointmentMsg, popularMsg, favouritesMsg;
+    TextView hiUsername, appointmentMsg, favouritesMsg;
     FirebaseAuth mAuth;
     FirebaseUser user;
-    StorageReference storageReference;
-    private FirebaseFirestore db;
-
-    //Lock lock = new ReentrantLock();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -53,18 +45,15 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // init view things
         appointments = findViewById(R.id.appointment_list);
         favourites = findViewById(R.id.favourites_list);
-        populars = findViewById(R.id.popular_list);
+        allBarbers = findViewById(R.id.all_list);
         searchBar = findViewById(R.id.search_bar);
         hiUsername = findViewById(R.id.hi_username_text);
         appointmentMsg = findViewById(R.id.noAppointments);
         favouritesMsg = findViewById(R.id.noFavourrites);
-        popularMsg = findViewById(R.id.noPopular);
 
         // init DB things
         mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser(); // FirebaseAuth.getInstance().getCurrentUser()
-            db = FirebaseFirestore.getInstance();
-        //lock.lock();
+        user = mAuth.getCurrentUser();
 
         if (user == null) // check if the user is connected
         {
@@ -79,7 +68,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // init the RecyclerViews and the data from the Firestore and Storage;
         initAppointment();
         initFavourites();
-        initPopular();
+        initAll();
 
         // Set the OnEditorActionListener inside onCreate method
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -164,10 +153,10 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
-    private void initPopular()
+    private void initAll()
     {
-        this.populars = findViewById(R.id.popular_list);
-        this.populars.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        this.allBarbers = findViewById(R.id.all_list);
+        this.allBarbers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         if (Helper.barbers == null)
         {
@@ -179,12 +168,12 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         }
 
         // Create and set adapter
-        this.populars_add = new BarberAdapter(Helper.barbers, this, 2);
-        this.populars.setAdapter(populars_add);
+        this.allBarbers_add = new BarberAdapter(Helper.barbers, this, 2);
+        this.allBarbers.setAdapter(allBarbers_add);
 
         // Apply ItemSpacingDecoration to add spacing between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        this.populars.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
+        this.allBarbers.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
 
@@ -211,7 +200,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         }
         else if (type == 2)
         {
-            barber = ((BarberAdapter) populars_add).GetBarberByPosition(position);
+            barber = ((BarberAdapter) allBarbers_add).GetBarberByPosition(position);
         }
 
         Intent intent = new Intent(this, BarberInfo.class);

@@ -220,17 +220,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
                 <TextView
-                    android:id="@+id/popular_text"
+                    android:id="@+id/all_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
-                    android:text="Popular"
+                    android:text="All Barbers"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="DuplicateIds,MissingConstraints" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/popular_list"
+                    android:id="@+id/all_list"
                     android:layout_width="340dp"
                     android:layout_height="135dp"
                     tools:ignore="MissingConstraints" />
