@@ -53,7 +53,6 @@
             android:ems="10"
             android:gravity="center|left"
             android:hint="Enter New Username"
-            android:inputType="textPassword"
             android:minHeight="48dp"
             android:paddingEnd="15dp"
             android:textColor="#6B1CAA"
