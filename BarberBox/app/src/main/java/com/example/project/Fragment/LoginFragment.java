@@ -1,6 +1,7 @@
 package com.example.project.Fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +30,17 @@ public class LoginFragment extends Fragment
     private MainActivity mainActivity;
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(@NonNull Context context)
+    {
         super.onAttach(context);
+
         // Cast the context (which is the activity) to the specific activity class
-        if (context instanceof MainActivity) {
+        if (context instanceof MainActivity)
+        {
             mainActivity = (MainActivity) context;
-        } else {
+        }
+        else
+        {
             throw new RuntimeException(context.toString()
                     + " must be an instance of MainActivity");
         }
@@ -42,9 +48,8 @@ public class LoginFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         mAuth = FirebaseAuth.getInstance();
@@ -52,42 +57,40 @@ public class LoginFragment extends Fragment
         emailField = view.findViewById(R.id.f_enterEmailLogin);
         passwordField = view.findViewById(R.id.f_enterPasswordLogin);
 
-        registerBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (passwordField.getText().toString().trim().isEmpty() || emailField.getText().toString().trim().isEmpty())
-                {
-                    Toast.makeText(getActivity(), "The password or username is missing.",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    String password = String.valueOf(passwordField.getText());
-                    String email = String.valueOf(emailField.getText());
+        registerBT.setOnClickListener(v ->
+        {
+            if (passwordField.getText().toString().trim().isEmpty()
+                    || emailField.getText().toString().trim().isEmpty())
+            {
+                Toast.makeText(getActivity(), "The password or username is missing.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                String password = String.valueOf(passwordField.getText());
+                String email = String.valueOf(emailField.getText());
 
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task ->
+                        {
+                            if (task.isSuccessful())
+                            {
 
-                                        Toast.makeText(getActivity(), "Authentication succeed.",
-                                                Toast.LENGTH_SHORT).show();
-                                        mainActivity.toLoading();
+                                Toast.makeText(getActivity(),
+                                        "Authentication succeed.",
+                                        Toast.LENGTH_SHORT).show();
+                                mainActivity.toLoading();
 
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Toast.makeText(getActivity(), "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(getActivity(),
+                                        "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
 
-                                    }
-                                }
-                            });
-                }
+                            }
+                        });
             }
         });
-
-
         return view;
     }
 }

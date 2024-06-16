@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemSpacingDecorationRight extends RecyclerView.ItemDecoration
 {
-    private int spacing;
+    private final int spacing;
 
     // Constructor to initialize the ItemSpacingDecoration with the spacing value
     public ItemSpacingDecorationRight(Context context, int spacing)

@@ -58,7 +58,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         if (user == null) // check if the user is connected
         {
             mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class); // run the main class
+            Intent intent = new Intent(this, MainActivity.class); // run the mainActivity
             startActivity(intent);
             finish();
         }
@@ -68,21 +68,20 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         // init the RecyclerViews and the data from the Firestore and Storage;
         initAppointment();
         initFavourites();
-        initAll();
+        initAllBarbers();
 
         // Set the OnEditorActionListener inside onCreate method
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            // function that detects when the user press enter on the search_bar EditText
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
-                        event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                {
-                    EnterSearchResults();
-                    return true;
-                }
-                return false;
+        // function that detects when the user press enter on the search_bar EditText
+        searchBar.setOnEditorActionListener((v, actionId, event) ->
+        {
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
+                    event.getAction() == KeyEvent.ACTION_DOWN &&
+                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+            {
+                EnterSearchResults();
+                return true;
             }
+            return false;
         });
     }
 
@@ -122,7 +121,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
     }
 
-    private void initFavourites() {
+    private void initFavourites()
+    {
 
         this.favourites = findViewById(R.id.favourites_list);
         this.favourites.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -155,7 +155,7 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         this.favourites.addItemDecoration(new ItemSpacingDecorationRight(this, spacingInPixels));
     }
 
-    private void initAll()
+    private void initAllBarbers()
     {
         this.allBarbers = findViewById(R.id.all_list);
         this.allBarbers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -180,7 +180,8 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
 
 
     @Override
-    public void onAppointmentClick(int position) {
+    public void onAppointmentClick(int position)
+    {
 
         Appointment appointment = ((AppointmentAdapter) appointments_add).GetAppointmentByPosition(position);
 
@@ -213,18 +214,21 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
         finish();
     }
 
-    public void menuHome(View view) {
-
+    public void menuHome(View view)
+    {
+        // we already here
     }
 
-    public void menuSearch(View view) {
-        Intent intent = new Intent(this, SearchResultsActivity.class); // run the main class
-        intent.putExtra("searchTerm", "NULL"); // Example: sending a string value
+    public void menuSearch(View view)
+    {
+        Intent intent = new Intent(this, SearchResultsActivity.class);
+        intent.putExtra("searchTerm", "");
         startActivity(intent);
         finish();
     }
 
-    public void menuUser(View view) {
+    public void menuUser(View view)
+    {
         Intent intent = new Intent(this, AccountSettings.class); // run the main class
         startActivity(intent);
         finish();

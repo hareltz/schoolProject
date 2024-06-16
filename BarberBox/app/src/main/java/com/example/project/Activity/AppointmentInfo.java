@@ -31,7 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.File;
 import java.util.Objects;
 
-public class AppointmentInfo extends AppCompatActivity {
+public class AppointmentInfo extends AppCompatActivity
+{
     TextView name, name2, phoneNum, address, date;
     AlertDialog.Builder builder;
     com.google.android.material.imageview.ShapeableImageView pic;
@@ -41,7 +42,8 @@ public class AppointmentInfo extends AppCompatActivity {
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_appointment_info);
@@ -110,51 +112,38 @@ public class AppointmentInfo extends AppCompatActivity {
 
                         appointmentRef
                                 .update("user_id", "")
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task)
+                                .addOnCompleteListener(task ->
+                                {
+                                    Toast.makeText(AppointmentInfo.this, "The appointment was successfully cancelled!", Toast.LENGTH_SHORT).show();
+
+                                    for (Appointment tempAppointment : barber.getAppointments())
                                     {
-                                        Toast.makeText(AppointmentInfo.this, "The appointment was successfully cancelled!", Toast.LENGTH_SHORT).show();
-
-                                        for (Appointment tempAppointment : barber.getAppointments())
+                                        if (Objects.equals(tempAppointment.getDocumentName(), appointmentDocumentName))
                                         {
-                                            if (Objects.equals(tempAppointment.getDocumentName(), appointmentDocumentName))
-                                            {
-                                                tempAppointment.setUser_id("");
-                                                break;
-                                            }
+                                            tempAppointment.setUser_id("");
+                                            break;
                                         }
-                                        barber.changeAppointmentUserId(appointmentDocumentName);
+                                    }
+                                    barber.changeAppointmentUserId(appointmentDocumentName);
 
-                                        for (Appointment a : Helper.appointments)
+                                    for (Appointment a : Helper.appointments)
+                                    {
+                                        if (Objects.equals(a.getDocumentName(), appointmentDocumentName))
                                         {
-                                            if (Objects.equals(a.getDocumentName(), appointmentDocumentName))
-                                            {
-                                                Helper.appointments.remove(a);
-                                                Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
-                                                startActivity(intent);
-                                                finish();
-                                                break;
-                                            }
+                                            Helper.appointments.remove(a);
+                                            Intent intent = new Intent(AppointmentInfo.this, MainPage.class);
+                                            startActivity(intent);
+                                            finish();
+                                            break;
                                         }
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(AppointmentInfo.this, "Problem canceling the appointment, contact support", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                .addOnFailureListener(e -> Toast.makeText(AppointmentInfo.this, "Problem canceling the appointment, contact support", Toast.LENGTH_SHORT).show());
 
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 

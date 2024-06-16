@@ -30,15 +30,18 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BarberInfo extends AppCompatActivity {
+public class BarberInfo extends AppCompatActivity
+{
 
     TextView name, name2, phoneNum, address;
     com.google.android.material.imageview.ShapeableImageView pic;
     Barber barber;
     ToggleButton likeBt;
+
     @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_barber_info);
@@ -47,8 +50,6 @@ public class BarberInfo extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // change this to get only the barber ID and get this info from the DB
 
         name = findViewById(R.id.barberInfo_name);
         name2 = findViewById(R.id.barberInfo_name2);

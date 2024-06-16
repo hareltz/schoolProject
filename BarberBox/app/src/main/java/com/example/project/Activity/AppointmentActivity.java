@@ -51,7 +51,8 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
 
     @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_appointment);
@@ -90,46 +91,30 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         builder.setTitle("Alert!")
                 .setMessage("Are you sure you want to make an appointment?")
                 .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
-                        appointments.get(position).setUser_id(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                        Helper.appointments.add(appointments.get(position));
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Intent intent = new Intent(AppointmentActivity.this, MainPage.class);
+                    appointments.get(position).setUser_id(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    Helper.appointments.add(appointments.get(position));
 
-                        // Get the barber document reference by barber name
-                        DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
+                    // Get the barber document reference by barber name
+                    DocumentReference barberRef = FirebaseFirestore.getInstance().collection("barbers").document(barber.get_id());
 
-                        // Get the appointment document reference by timestamp under the barber's appointments collection
-                        DocumentReference appointmentRef = barberRef.collection("appointments").document(appointments.get(position).getDocumentName());
+                    // Get the appointment document reference by timestamp under the barber's appointments collection
+                    DocumentReference appointmentRef = barberRef.collection("appointments").document(appointments.get(position).getDocumentName());
 
-                        appointmentRef
-                                .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task)
-                                            {
-                                                Toast.makeText(AppointmentActivity.this, "The appointment was successfully made!", Toast.LENGTH_SHORT).show();
-                                                Helper.setNotification(AppointmentActivity.this, appointments.get(position).getTime());
-                                                Helper.addEventToCalendar(AppointmentActivity.this, appointments.get(position).getTime(), barber);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(AppointmentActivity.this, "Appointment declined, contact support", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                        startActivity(intent);
-                        finish();
-                    }
+                    appointmentRef
+                            .update("user_id",  FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .addOnCompleteListener(task ->
+                                    {
+                                        Toast.makeText(AppointmentActivity.this, "The appointment was successfully made!", Toast.LENGTH_SHORT).show();
+                                        Helper.setNotification(AppointmentActivity.this, appointments.get(position).getTime());
+                                        Helper.addEventToCalendar(AppointmentActivity.this, appointments.get(position).getTime(), barber);
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(AppointmentActivity.this, "Appointment declined, contact support", Toast.LENGTH_SHORT).show());
+                    startActivity(intent);
+                    finish();
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -143,10 +128,9 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         for (Appointment appointment : tempAppointments)
         {
             if (Objects.equals(appointment.getUser_id(), "") // check if the appointment in already taken
-                    && appointment.getAppointmentTime().compareTo(currentTimestamp) > 0) // check if the time of the appointment is in the future
+                    && appointment.getTime().compareTo(currentTimestamp) > 0) // check if the time of the appointment is in the future
             {
-                appointment.setBarber(barber);
-                appointments.add(appointment);
+                this.appointments.add(appointment);
             }
         }
 
@@ -157,7 +141,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
         this.appointmentsRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // Create and set adapter
-        appointments_add = new AppointmentChooseAdapter(appointments, this);
+        appointments_add = new AppointmentChooseAdapter(this.appointments, this);
         this.appointmentsRV.setAdapter(appointments_add);
 
         // Apply ItemSpacingDecoration to add spacing between items

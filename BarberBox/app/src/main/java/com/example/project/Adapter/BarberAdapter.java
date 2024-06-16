@@ -21,9 +21,10 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
 {
     ArrayList<Barber> barbers;
     private final IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick;
-    private final int type; // 1 - Favourites // 2 - Popular
+    private final int type; // 1 - favourites // 2 - all barbers
 
-    public BarberAdapter(ArrayList<Barber> barbers, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick, int type) {
+    public BarberAdapter(ArrayList<Barber> barbers, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick, int type)
+    {
         this.barbers = barbers;
         this.iRecyclerViewOnBarberClick = iRecyclerViewOnBarberClick;
         this.type = type;
@@ -31,13 +32,15 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
 
     @NonNull
     @Override
-    public BarberAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BarberAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_barber_box, parent, false);
         return new Viewholder(view, iRecyclerViewOnBarberClick, type);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BarberAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull BarberAdapter.Viewholder holder, int position)
+    {
         holder.Name.setText(barbers.get(position).getName());
         holder.PhoneNumber.setText(barbers.get(position).getPhone_number());
 
@@ -52,7 +55,8 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return barbers.size();
     }
 
@@ -68,16 +72,14 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.Viewholder
             PhoneNumber = itemView.findViewById(R.id.barbers_phone);
             pic = itemView.findViewById(R.id.barbers_pic);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iRecyclerViewOnBarberClick != null)
+            itemView.setOnClickListener(v ->
+            {
+                if (iRecyclerViewOnBarberClick != null)
+                {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION)
                     {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            iRecyclerViewOnBarberClick.onBarberClick(position, type);
-                        }
+                        iRecyclerViewOnBarberClick.onBarberClick(position, type);
                     }
                 }
             });

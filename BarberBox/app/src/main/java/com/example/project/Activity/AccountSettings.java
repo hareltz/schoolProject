@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.Objects;
+
 public class AccountSettings extends AppCompatActivity {
 
     private FirebaseUser user;
@@ -31,7 +33,8 @@ public class AccountSettings extends AppCompatActivity {
     EditText currentPassword, newPassword, newUsername, newEmail;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_account_settings);
@@ -96,96 +99,85 @@ public class AccountSettings extends AppCompatActivity {
 
 
     // this function checks if the old password is correct
-    private void authenticate(String currentPassword, final OnAuthenticateListener listener) {
+    private void authenticate(String currentPassword, final OnAuthenticateListener listener)
+    {
         AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
         user.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            listener.onSuccess();
-                        } else {
-                            Toast.makeText(AccountSettings.this, "Current password is incorrect", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful())
+                    {
+                        listener.onSuccess();
+                    } else {
+                        Toast.makeText(AccountSettings.this, "Current password is incorrect", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     // this function update the email
-    private void updateEmail(String newEmail, String currentPassword) {
+    private void updateEmail(String newEmail, String currentPassword)
+    {
 
-        authenticate(currentPassword, new OnAuthenticateListener() {
-            @Override
-            public void onSuccess() {
-                user.verifyBeforeUpdateEmail(newEmail)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(AccountSettings.this, "Email updated.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(AccountSettings.this, "Failed to update email.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
+        authenticate(currentPassword, () -> user.verifyBeforeUpdateEmail(newEmail)
+                .addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful())
+                    {
+                        Toast.makeText(AccountSettings.this, "Email updated.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AccountSettings.this, "Failed to update email.", Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     // this function update the password
     private void updatePassword(String newPassword, String currentPassword) {
 
-        if (Helper.checkPassword(newPassword) != Helper.GOOD_PASSWORD)
+        if (!Objects.equals(Helper.checkPassword(newPassword), Helper.GOOD_PASSWORD))
         {
             Toast.makeText(AccountSettings.this, Helper.checkPassword(newPassword), Toast.LENGTH_SHORT).show();
         }
         else
         {
-            authenticate(currentPassword, new OnAuthenticateListener() {
-                @Override
-                public void onSuccess() {
-                    user.updatePassword(newPassword)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(AccountSettings.this, "Password updated.", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(AccountSettings.this, "Failed to update password.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
-            });
+            authenticate(currentPassword, () -> user.updatePassword(newPassword)
+                    .addOnCompleteListener(task ->
+                    {
+                        if (task.isSuccessful())
+                        {
+                            Toast.makeText(AccountSettings.this, "Password updated.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(AccountSettings.this, "Failed to update password.", Toast.LENGTH_SHORT).show();
+                        }
+                    }));
         }
     }
 
     // this function update the username
-    private void updateUsername(String newUsername, String currentPassword) {
-        authenticate(currentPassword, new OnAuthenticateListener() {
-            @Override
-            public void onSuccess() {
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(newUsername)
-                        .build();
+    private void updateUsername(String newUsername, String currentPassword)
+    {
+        authenticate(currentPassword, () ->
+        {
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(newUsername)
+                    .build();
 
-                user.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(AccountSettings.this, "Username updated.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(AccountSettings.this, "Failed to update username.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(task ->
+                    {
+                        if (task.isSuccessful())
+                        {
+                            Toast.makeText(AccountSettings.this, "Username updated.", Toast.LENGTH_SHORT).show();
+                        } else
+                        {
+                            Toast.makeText(AccountSettings.this, "Failed to update username.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
     }
 
     // an interface for this class only
-    interface OnAuthenticateListener {
+    interface OnAuthenticateListener
+    {
         void onSuccess();
     }
 }

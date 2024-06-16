@@ -15,42 +15,38 @@ import com.example.project.R;
 
 import java.util.ArrayList;
 
-public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentChooseAdapter.Viewholder>{
+public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentChooseAdapter.Viewholder>
+{
 
     ArrayList<Appointment> appointments = new ArrayList<>();
     private final IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick;
 
-    public AppointmentChooseAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick) {
+    public AppointmentChooseAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick)
+    {
         this.iRecyclerViewOnItemClick = iRecyclerViewOnItemClick;
         this.appointments = appointments;
     }
 
     @NonNull
     @Override
-    public AppointmentChooseAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AppointmentChooseAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_appointment_screen_option, parent, false);
         return new AppointmentChooseAdapter.Viewholder(view, iRecyclerViewOnItemClick);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AppointmentChooseAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull AppointmentChooseAdapter.Viewholder holder, int position)
+    {
         holder.Date.setText(Helper.getDateFromTimestamp(appointments.get(position).getAppointmentTime()));
         holder.Time.setText(Helper.getTimeFromTimestamp(appointments.get(position).getAppointmentTime()));
         holder.Price.setText(appointments.get(position).getPrice());
     }
 
     @Override
-    public int getItemCount() {
-        return appointments.size();
-    }
-
-    public Appointment GetAppointmentByPosition(int position) {
-        return appointments.get(position);
-    }
-
-    public void clearItems()
+    public int getItemCount()
     {
-        appointments.clear();
+        return appointments.size();
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder
@@ -64,16 +60,14 @@ public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentCh
             Time = itemView.findViewById(R.id.appointment_choose_time);
             Price = itemView.findViewById(R.id.appointment_choose_price);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iRecyclerViewOnItemClick != null)
+            itemView.setOnClickListener(v ->
+            {
+                if (iRecyclerViewOnItemClick != null)
+                {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION)
                     {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            iRecyclerViewOnItemClick.onAppointmentClick(position);
-                        }
+                        iRecyclerViewOnItemClick.onAppointmentClick(position);
                     }
                 }
             });

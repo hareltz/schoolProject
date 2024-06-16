@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Barber {
+public class Barber
+{
     private String _id;
     private String name;
     private String phone_number;
@@ -17,15 +18,18 @@ public class Barber {
     public Barber() {} // Empty constructor for Firestore
 
     // Constructor with parameters
-    public Barber(String name, GeoPoint location) {
+    public Barber(String name, GeoPoint location)
+    {
         this.name = name;
         this.location = location;
     }
 
-    public void addAppointment(Appointment a) {
+    public void addAppointment(Appointment a)
+    {
         appointments_.add(a);
     }
-    public void changeAppointmentUserId(String document) {
+    public void changeAppointmentUserId(String document)
+    {
         for (Appointment appointment : appointments_)
         {
             if (Objects.equals(appointment.getDocumentName(), document))

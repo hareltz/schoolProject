@@ -21,20 +21,23 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 {
     ArrayList<Barber> searchResult;
     private final IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick;
-    public SearchResultsAdapter(ArrayList<Barber> searchResult, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick) {
+    public SearchResultsAdapter(ArrayList<Barber> searchResult, IRecyclerViewOnBarberClick iRecyclerViewOnBarberClick)
+    {
         this.searchResult = searchResult;
         this.iRecyclerViewOnBarberClick = iRecyclerViewOnBarberClick;
     }
 
     @NonNull
     @Override
-    public SearchResultsAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearchResultsAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_search_result, parent, false);
         return new Viewholder(view, iRecyclerViewOnBarberClick);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchResultsAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull SearchResultsAdapter.Viewholder holder, int position)
+    {
         holder.Name.setText(searchResult.get(position).getName());
         holder.PhoneNumber.setText(searchResult.get(position).getPhone_number());
         holder.Price.setText(searchResult.get(position).getAppointments().get(0).getPrice());
@@ -50,7 +53,8 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return searchResult.size();
     }
 
@@ -67,16 +71,14 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             Pic = itemView.findViewById(R.id.search_results_barber_pic);
             Price = itemView.findViewById(R.id.search_results_price);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iRecyclerViewOnBarberClick != null)
+            itemView.setOnClickListener(v ->
+            {
+                if (iRecyclerViewOnBarberClick != null)
+                {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION)
                     {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            iRecyclerViewOnBarberClick.onBarberClick(position, -1);
-                        }
+                        iRecyclerViewOnBarberClick.onBarberClick(position, -1);
                     }
                 }
             });

@@ -1,6 +1,7 @@
 package com.example.project.Fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class RegisterFragment extends Fragment {
+import java.util.Objects;
+
+public class RegisterFragment extends Fragment
+{
 
     TextView registerBT;
     EditText emailField, passwordField;
@@ -31,12 +35,16 @@ public class RegisterFragment extends Fragment {
     private MainActivity mainActivity;
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(@NonNull Context context)
+    {
         super.onAttach(context);
         // Cast the context (which is the activity) to the specific activity class
-        if (context instanceof MainActivity) {
+        if (context instanceof MainActivity)
+        {
             mainActivity = (MainActivity) context;
-        } else {
+        }
+        else
+        {
             throw new RuntimeException(context.toString()
                     + " must be an instance of MainActivity");
         }
@@ -44,9 +52,8 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         mAuth = FirebaseAuth.getInstance();
@@ -55,62 +62,60 @@ public class RegisterFragment extends Fragment {
         passwordField = view.findViewById(R.id.f_enterPasswordRegister);
 
 
-        registerBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
+        registerBT.setOnClickListener(v ->
+        {
+            if (passwordField.toString().isEmpty() || emailField.toString().isEmpty())
             {
-                if (passwordField.toString().isEmpty() || emailField.toString().isEmpty())
+                Toast.makeText(getActivity(), "you have to enter things",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                String password = String.valueOf(passwordField.getText());
+                String email = String.valueOf(emailField.getText());
+                String username = Helper.getUsername(email);
+                String output = Helper.checkPassword(password);
+
+                if (Objects.equals(output, Helper.GOOD_PASSWORD))
                 {
-                    Toast.makeText(getActivity(), "you have to enter things",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    String password = String.valueOf(passwordField.getText());
-                    String email = String.valueOf(emailField.getText());
-                    String username = Helper.getUsername(email);
-                    String output = Helper.checkPassword(password);
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(task ->
+                            {
+                                if (task.isSuccessful())
+                                {
+                                    Toast.makeText(getActivity(),
+                                            "Authentication succeed.",
+                                            Toast.LENGTH_SHORT).show();
 
-                    if (output == Helper.GOOD_PASSWORD)
-                    {
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getActivity(), "Authentication succeed.",
-                                                    Toast.LENGTH_SHORT).show();
+                                    FirebaseUser user = mAuth.getCurrentUser();
 
-                                            FirebaseUser user = mAuth.getCurrentUser();
+                                    if (user != null)
+                                    {
+                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                .setDisplayName(username)
+                                                .build();
 
-                                            if (user != null) {
-                                                // Update the user profile with the desired username
-                                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                        .setDisplayName(username) // Replace 'username' with the actual username variable
-                                                        .build();
-
-                                                user.updateProfile(profileUpdates)
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> profileUpdateTask) {
-                                                            }
-                                                        });
-                                            }
-
-                                            //FirebaseAuth.getInstance().signOut();
-                                            mainActivity.toLoading();
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            Toast.makeText(getActivity(), "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
+                                        user.updateProfile(profileUpdates)
+                                                .addOnCompleteListener(profileUpdateTask -> { });
                                     }
-                                });
-                    }
-                    else
-                    {
-                        Toast.makeText(getActivity(), output,
-                                Toast.LENGTH_SHORT).show();
-                    }
+
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                                    {
+                                        mainActivity.toLoading();
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(getActivity(),
+                                            "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), output,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

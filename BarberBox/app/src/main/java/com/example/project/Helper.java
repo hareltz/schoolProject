@@ -12,6 +12,7 @@ import android.location.Geocoder;
 import android.os.Environment;
 import android.provider.CalendarContract;
 
+import com.example.project.BroadcastReceiver.AlarmReceiver;
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
 import com.google.firebase.Timestamp;
@@ -35,25 +36,10 @@ public class Helper {
 
     public static final String GOOD_PASSWORD = "GOOD PASSWORD"; // Constant for a good password
     public static ArrayList<Barber> barbers; // arrayList for the barbers
-
     public static Map<String, Boolean> favourites = new HashMap<>();
     public static ArrayList<Appointment> appointments = new ArrayList<>(); // arrayList for the appointments
 
-
-    /*private void setAlarm(Timestamp timestamp) {
-        // Convert the Firebase Timestamp to milliseconds since epoch
-        long timeInMillis = timestamp.toDate().getTime();
-
-        // Set the alarm using the converted time
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-        }
-    }*/
-
+    // this function creates a new notification at timestamp
     public static void setNotification(Context context, Timestamp timestamp) {
         // Convert Firebase Timestamp to java.util.Date
         Date date = timestamp.toDate();
@@ -67,7 +53,7 @@ public class Helper {
 
         // Create an intent and pending intent for the notification
         Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE );
 
         // Get the AlarmManager service and set the exact alarm
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -76,6 +62,7 @@ public class Helper {
         }
     }
 
+    // this function add an event to the calendar at timestamp
     public static void addEventToCalendar(Context context, Timestamp timestamp, Barber barber)
     {
         // Convert Firebase Timestamp to Date
@@ -103,16 +90,6 @@ public class Helper {
         // Start the activity with the intent
         context.startActivity(intent);
     }
-
-
-    /*public static void openLocationInGoogleMaps(double latitude, double longitude) {
-        Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        }
-    }*/
 
     // this function check if the password is
     // 1. Password is at least 8 characters long.
@@ -147,7 +124,8 @@ public class Helper {
     }
 
     // Sample method to get date from GeoPoint
-    public static String getDateFromTimestamp(Timestamp timestamp) {
+    public static String getDateFromTimestamp(Timestamp timestamp)
+    {
         Date date = timestamp.toDate(); // convert the timestamp to Date
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -157,7 +135,8 @@ public class Helper {
     }
 
     // Sample method to get the time from GeoPoint
-    public static String getTimeFromTimestamp(Timestamp timestamp) {
+    public static String getTimeFromTimestamp(Timestamp timestamp)
+    {
         Date date = timestamp.toDate(); // convert the timestamp to Date
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(" HH:mm", Locale.getDefault());
@@ -167,17 +146,22 @@ public class Helper {
     }
 
     // this function get the username@gmail.com from the email ("username" in our case)
-    public static String getUsername(String email) {
+    public static String getUsername(String email)
+    {
         int atIndex = email.indexOf('@');
-        if (atIndex != -1) {
+        if (atIndex != -1)
+        {
             return email.substring(0, atIndex);
-        } else {
+        }
+        else
+        {
             return "user";
         }
     }
 
     // this function return the barber with the barberId
-    public static Barber getBarberDataById(String barberId) {
+    public static Barber getBarberDataById(String barberId)
+    {
         for (Barber barber : barbers)
         {
             if (Objects.equals(barber.get_id(), barberId))
@@ -186,12 +170,6 @@ public class Helper {
             }
         }
         return null;
-    }
-
-    //The BarbersDataListener helps us handle when the data for barbers is loaded or if there's an error during the process.
-    public interface BarbersDataListener {
-        void onDataLoaded(ArrayList<Barber> barbers);
-        void onError(String errorMessage);
     }
 
     public static void SaveImage(File localFile, String imageName)
@@ -226,19 +204,25 @@ public class Helper {
         return localFile;
     }
 
-    public static String getAddressFromGeoPoint(GeoPoint geoPoint, Context context) {
+    public static String getAddressFromGeoPoint(GeoPoint geoPoint, Context context)
+    {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        try {
+        try
+        {
             List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
-            if (addresses != null && !addresses.isEmpty()) {
+            if (addresses != null && !addresses.isEmpty())
+            {
                 Address address = addresses.get(0);
                 StringBuilder addressString = new StringBuilder();
-                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++)
+                {
                     addressString.append(address.getAddressLine(i)).append("\n");
                 }
                 return addressString.toString();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         return null;
@@ -246,9 +230,11 @@ public class Helper {
 
 
     // Comparator to compare Appointments by their time
-    public static class AppointmentTimeComparator implements Comparator<Appointment> {
+    public static class AppointmentTimeComparator implements Comparator<Appointment>
+    {
         @Override
-        public int compare(Appointment a1, Appointment a2) {
+        public int compare(Appointment a1, Appointment a2)
+        {
             return a1.getTime().compareTo(a2.getTime());
         }
     }

@@ -23,22 +23,23 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     ArrayList<Appointment> appointments;
     private final IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick;
 
-    StorageReference storageReference;
-
-    public AppointmentAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick) {
+    public AppointmentAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick)
+    {
         this.appointments = appointments;
         this.iRecyclerViewOnItemClick = iRecyclerViewOnItemClick;
     }
 
     @NonNull
     @Override
-    public AppointmentAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AppointmentAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewlayout_appointments, parent, false);
         return new AppointmentAdapter.Viewholder(view, iRecyclerViewOnItemClick);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AppointmentAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull AppointmentAdapter.Viewholder holder, int position)
+    {
         holder.Name.setText(appointments.get(position).getBarber().getName().split(" ")[0]);
         holder.PhoneNumber.setText(appointments.get(position).getBarber().getPhone_number());
         holder.Date.setText(Helper.getDateFromTimestamp(appointments.get(position).getAppointmentTime()));
@@ -55,11 +56,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return appointments.size();
     }
 
-    public Appointment GetAppointmentByPosition(int position) {
+    public Appointment GetAppointmentByPosition(int position)
+    {
         return appointments.get(position);
     }
 
@@ -78,16 +81,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             Time = itemView.findViewById(R.id.appointment_time);
             Pic = itemView.findViewById(R.id.appointment_barber_pic);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iRecyclerViewOnItemClick != null)
+            itemView.setOnClickListener(v ->
+            {
+                if (iRecyclerViewOnItemClick != null)
+                {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION)
                     {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            iRecyclerViewOnItemClick.onAppointmentClick(position);
-                        }
+                        iRecyclerViewOnItemClick.onAppointmentClick(position);
                     }
                 }
             });

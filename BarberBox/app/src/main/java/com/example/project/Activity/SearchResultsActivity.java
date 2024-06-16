@@ -23,7 +23,8 @@ import com.example.project.R;
 
 import java.util.ArrayList;
 
-public class SearchResultsActivity extends AppCompatActivity implements IRecyclerViewOnBarberClick {
+public class SearchResultsActivity extends AppCompatActivity implements IRecyclerViewOnBarberClick
+{
 
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
@@ -32,7 +33,8 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     ArrayList<Barber> searchResults = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
         Intent intent = getIntent();
@@ -44,21 +46,20 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         String searchTerm = intent.getStringExtra("searchTerm");
         initSearchResults(searchTerm);
 
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            // function that detects when the user press enter on the search_bar EditText
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
-                        event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                {
-                    Intent intent = new Intent(SearchResultsActivity.this, SearchResultsActivity.class);
-                    intent.putExtra("searchTerm", searchBar.getText().toString()); // Example: sending a string value
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
+        // function that detects when the user press enter on the search_bar EditText
+        searchBar.setOnEditorActionListener((v, actionId, event) ->
+        {
+            if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
+                    event.getAction() == KeyEvent.ACTION_DOWN &&
+                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+            {
+                Intent intent1 = new Intent(SearchResultsActivity.this, SearchResultsActivity.class);
+                intent1.putExtra("searchTerm", searchBar.getText().toString()); // Example: sending a string value
+                startActivity(intent1);
+                finish();
+                return true;
             }
+            return false;
         });
     }
 
@@ -67,7 +68,7 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     {
         ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers);
 
-        if (searchTerm.isEmpty() || searchTerm == "")
+        if (searchTerm.isEmpty())
         {
             errorMsg.setText("You have to search something\n To get result enter something");
             errorMsg.setVisibility(View.VISIBLE);
@@ -113,22 +114,26 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
         finish();
     }
 
-    public void menuHome(View view) {
+    public void menuHome(View view)
+    {
         Intent intent = new Intent(this, MainPage.class);
         startActivity(intent);
         finish();
     }
 
-    public void menuSearch(View view) {
+    public void menuSearch(View view)
+    {
         // we here already
     }
 
-    public void menuUser(View view) {
+    public void menuUser(View view)
+    {
         Intent intent = new Intent(this, AccountSettings.class);
         startActivity(intent);
         finish();
     }
 
+    // when the user click a barber
     @Override
     public void onBarberClick(int position, int type)
     {

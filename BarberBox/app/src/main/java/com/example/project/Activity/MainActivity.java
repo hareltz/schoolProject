@@ -1,23 +1,17 @@
 package com.example.project.Activity;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.project.AlarmReceiver;
 import com.example.project.Fragment.LoginFragment;
 import com.example.project.R;
 import com.example.project.Fragment.RegisterFragment;
@@ -33,21 +26,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.FirebaseApp;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     FirebaseAuth auth;
     FirebaseUser user;
     public static final String CHANNEL_ID = "notifications";
+
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
     private static final int READ_EXTERNAL_STORAGE_CODE = 2;
     private static final int NOTIFICATIONS_CODE = 3;
-    public static final int REQUEST_CALENDAR_PERMISSION = 4;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -55,34 +47,37 @@ public class MainActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
         FirebaseApp.initializeApp(this); // init firebase app
 
-        createNotificationChannel(); // create the notifications channel.
 
-        boolean storagePermissionGranted = (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                && (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
-        boolean notificationPermissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-                || ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
-
-        if (!storagePermissionGranted) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
-                    WRITE_EXTERNAL_STORAGE_CODE);
-        }
-
-        if (!notificationPermissionGranted) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                    NOTIFICATIONS_CODE);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_CALENDAR_PERMISSION);
+            if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
+            }
+
+
+            if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_CODE);
+            }
         }
+
+        if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                || ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED))
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]
+                            {
+                                    Manifest.permission.POST_NOTIFICATIONS
+                            }, NOTIFICATIONS_CODE);
+        }
+
+        createNotificationChannel(); // create the notifications channel.
 
         if (user == null)
         {
@@ -95,35 +90,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults); // using the super function
 
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE)
         {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
             {
-                Toast.makeText(this, "Storage write permission is denied, please allow write permission to get image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Storage write permission is denied, please allow write permission to get image",
+                        Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == READ_EXTERNAL_STORAGE_CODE)
         {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
             {
-                Toast.makeText(this, "Storage read permission is denied, please allow read permission to get image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Storage read permission is denied, please allow read permission to get image",
+                        Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == NOTIFICATIONS_CODE)
         {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
             {
-                Toast.makeText(this, "Notifications permission is denied, please allow permission.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == REQUEST_CALENDAR_PERMISSION)
-        {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) // checks if permission not granted
-            {
-                Toast.makeText(this, "Calender permission is denied, please allow permission.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Notifications permission is denied, please allow permission.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -158,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    // this function creates the notification channel
     private void createNotificationChannel()
     {
         CharSequence name = "Barber Appointment Notification";
