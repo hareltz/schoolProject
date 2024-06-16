@@ -19,9 +19,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     @SuppressLint("MissingPermission")
     private void createNotification(Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.home_icon)
-                .setContentTitle("Scheduled Notification")
-                .setContentText("This is your scheduled notification.")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Barber Appointment Notification")
+                .setContentText("This is a reminder that you have an appointment tomorrow. for more information enter the app.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

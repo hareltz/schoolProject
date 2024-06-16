@@ -75,7 +75,9 @@ public class MainPage extends AppCompatActivity implements IRecyclerViewOnAppoin
             @Override
             // function that detects when the user press enter on the search_bar EditText
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
+                        event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                {
                     EnterSearchResults();
                     return true;
                 }

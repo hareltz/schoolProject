@@ -1,5 +1,7 @@
 package com.example.project;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -51,6 +53,28 @@ public class Helper {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
         }
     }*/
+
+    public static void setNotification(Context context, Timestamp timestamp) {
+        // Convert Firebase Timestamp to java.util.Date
+        Date date = timestamp.toDate();
+
+        // Create a Calendar instance and set it to the date from Firebase Timestamp
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        // Subtract one day for the notification time
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        // Create an intent and pending intent for the notification
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Get the AlarmManager service and set the exact alarm
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
 
     public static void addEventToCalendar(Context context, Timestamp timestamp, Barber barber)
     {

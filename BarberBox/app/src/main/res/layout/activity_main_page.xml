@@ -53,8 +53,8 @@
                         app:layout_constraintStart_toEndOf="@+id/hi_username_text"
                         app:layout_constraintTop_toTopOf="parent"
                         app:shapeAppearanceOverlay="@style/roundedImageView"
-                        app:srcCompat="@drawable/user_1"
-                        tools:srcCompat="@drawable/user_2" />
+                        app:srcCompat="@mipmap/user_icon"
+                        tools:srcCompat="@mipmap/user_icon" />
 
                     <TextView
                         android:id="@+id/hi_username_text"

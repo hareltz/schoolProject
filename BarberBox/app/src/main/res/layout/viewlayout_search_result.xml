@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:shapeAppearanceOverlay="@style/roundedImageView"
-        app:srcCompat="@drawable/user_1" />
+        app:srcCompat="@mipmap/user_icon" />
 
     <TextView
         android:id="@+id/search_results_barbers_name"

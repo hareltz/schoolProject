@@ -1,14 +1,19 @@
 package com.example.project.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project.Adapter.AppointmentChooseAdapter;
 import com.example.project.Adapter.SearchResultsAdapter;
 import com.example.project.Decoration.ItemSpacingDecorationBottom;
 import com.example.project.Domain.Barber;
@@ -23,7 +28,7 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
     private RecyclerView search_results;
     private RecyclerView.Adapter search_results_add;
     TextView search_results_text, errorMsg;
-
+    EditText searchBar;
     ArrayList<Barber> searchResults = new ArrayList<>();
 
     @Override
@@ -34,14 +39,32 @@ public class SearchResultsActivity extends AppCompatActivity implements IRecycle
 
         search_results_text = findViewById(R.id.search_results_text);
         errorMsg = findViewById(R.id.search_results_error);
+        searchBar = findViewById(R.id.search_result_search_bar);
 
         String searchTerm = intent.getStringExtra("searchTerm");
         initSearchResults(searchTerm);
+
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            // function that detects when the user press enter on the search_bar EditText
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null &&
+                        event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                {
+                    Intent intent = new Intent(SearchResultsActivity.this, SearchResultsActivity.class);
+                    intent.putExtra("searchTerm", searchBar.getText().toString()); // Example: sending a string value
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void initSearchResults(String searchTerm)
     {
-        // replace this with data from the db
         ArrayList<Barber> tempBarbers = new ArrayList<>(Helper.barbers);
 
         if (searchTerm.isEmpty() || searchTerm == "")

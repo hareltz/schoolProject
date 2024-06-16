@@ -39,7 +39,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
-    public static final String CHANNEL_ID = "notification_channel";
+    public static final String CHANNEL_ID = "notifications";
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
     private static final int READ_EXTERNAL_STORAGE_CODE = 2;
     private static final int NOTIFICATIONS_CODE = 3;
@@ -92,24 +92,6 @@ public class MainActivity extends AppCompatActivity {
         {
             toLoading(); // if the user is connected (going to the LoadingActivity)
         }
-    }
-
-    private void addEventToCalendar()
-    {
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2024, Calendar.JUNE, 20, 9, 0);
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2024, Calendar.JUNE, 20, 10, 0);
-
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.TITLE, "Sample Event")
-                .putExtra(CalendarContract.Events.DESCRIPTION, "This is a sample event")
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, "Sample Location")
-                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
-        startActivity(intent);
     }
 
     @Override
@@ -176,14 +158,13 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notification Channel";
-            String description = "Channel for Alarm Manager Notifications";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+    private void createNotificationChannel()
+    {
+        CharSequence name = "Barber Appointment Notification";
+        String description = "This is a reminder that you have an appointment tomorrow. for more information enter the app.";
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(description);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 }

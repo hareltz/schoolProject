@@ -110,6 +110,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                                             public void onComplete(@NonNull Task<Void> task)
                                             {
                                                 Toast.makeText(AppointmentActivity.this, "The appointment was successfully made!", Toast.LENGTH_SHORT).show();
+                                                Helper.setNotification(AppointmentActivity.this, appointments.get(position).getTime());
                                                 Helper.addEventToCalendar(AppointmentActivity.this, appointments.get(position).getTime(), barber);
                                             }
                                         })

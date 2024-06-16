@@ -176,7 +176,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AccountSettings_headline"
         app:shapeAppearanceOverlay="@style/roundedImageView"
-        app:srcCompat="@drawable/user_1"
-        tools:srcCompat="@drawable/user_2" />
+        app:srcCompat="@mipmap/user_icon"
+        tools:srcCompat="@mipmap/user_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

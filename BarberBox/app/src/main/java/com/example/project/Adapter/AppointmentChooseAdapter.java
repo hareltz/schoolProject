@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentChooseAdapter.Viewholder>{
 
-    ArrayList<Appointment> appointments;
+    ArrayList<Appointment> appointments = new ArrayList<>();
     private final IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick;
 
     public AppointmentChooseAdapter(ArrayList<Appointment> appointments, IRecyclerViewOnAppointmentClick iRecyclerViewOnItemClick) {
@@ -46,6 +46,11 @@ public class AppointmentChooseAdapter extends RecyclerView.Adapter<AppointmentCh
 
     public Appointment GetAppointmentByPosition(int position) {
         return appointments.get(position);
+    }
+
+    public void clearItems()
+    {
+        appointments.clear();
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder

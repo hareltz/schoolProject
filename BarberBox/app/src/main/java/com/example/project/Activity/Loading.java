@@ -21,6 +21,7 @@ import com.example.project.Helper;
 import com.example.project.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,8 +33,10 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +56,8 @@ public class Loading extends AppCompatActivity {
         });
 
         fetchData();
-        setAlarm();
+        // for testing
+        Helper.setNotification(Loading.this, Timestamp.now());
     }
 
     // This function take the user to the main screen
@@ -64,8 +68,7 @@ public class Loading extends AppCompatActivity {
     }
 
     // This function will fetch the images from Firebase
-    private void fetchData()
-    {
+    private void fetchData() {
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Helper.barbers = new ArrayList<Barber>();
@@ -84,8 +87,7 @@ public class Loading extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         for (Map.Entry<String, Object> entry : document.getData().entrySet()) {
-                            if ((boolean) entry.getValue())
-                            {
+                            if ((boolean) entry.getValue()) {
                                 Helper.favourites.put(entry.getKey(), (Boolean) entry.getValue());
                             }
                         }
@@ -105,8 +107,6 @@ public class Loading extends AppCompatActivity {
                                 }
                             });
                 });
-
-
 
 
         // Fetch data from Firestore
@@ -130,24 +130,20 @@ public class Loading extends AppCompatActivity {
                                         .get()
                                         .addOnCompleteListener(task1 -> {
                                             QuerySnapshot appointmentsQuery = task1.getResult();
-                                            if (task1 != null && appointmentsQuery != null && !appointmentsQuery.isEmpty())
-                                            {
-                                                for (QueryDocumentSnapshot appointment : appointmentsQuery)
-                                                {
+                                            if (task1 != null && appointmentsQuery != null && !appointmentsQuery.isEmpty()) {
+                                                for (QueryDocumentSnapshot appointment : appointmentsQuery) {
                                                     Appointment tempAppointment = appointment.toObject(Appointment.class);
                                                     tempAppointment.setDocumentName(appointment.getId());
                                                     tempAppointment.setBarber(barber);
                                                     barber.addAppointment(tempAppointment);
 
-                                                    if (Objects.equals(tempAppointment.getUser_id(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                                    {
+                                                    if (Objects.equals(tempAppointment.getUser_id(), FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         Helper.appointments.add(tempAppointment);
                                                     }
 
                                                     // check if we got all the appointments and images
                                                     appointmentsCounter[0]++;
-                                                    if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
-                                                    {
+                                                    if (appointmentsCounter[0] == tempList.size() && imagesCounter[0] == tempList.size()) {
                                                         end();
                                                     }
                                                 }
@@ -167,12 +163,10 @@ public class Loading extends AppCompatActivity {
                                         storageReference.getFile(localFile)
                                                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                                     @Override
-                                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
-                                                    {
+                                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                                         Helper.SaveImage(localFile, barber.getName().replace(" ", "_") + ".png");
                                                         imagesCounter[0]++;
-                                                        if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
-                                                        {
+                                                        if (appointmentsCounter[0] == tempList.size() && imagesCounter[0] == tempList.size()) {
                                                             end();
                                                         }
                                                     }
@@ -187,13 +181,10 @@ public class Loading extends AppCompatActivity {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     // check if we got all the appointments and images
                                     imagesCounter[0]++;
-                                    if (appointmentsCounter[0] ==  tempList.size() && imagesCounter[0] ==  tempList.size())
-                                    {
+                                    if (appointmentsCounter[0] == tempList.size() && imagesCounter[0] == tempList.size()) {
                                         end();
                                     }
                                 }
@@ -206,20 +197,5 @@ public class Loading extends AppCompatActivity {
                         // Handle error if necessary
                     }
                 });
-    }
-
-    private void setAlarm() {
-        // Set the time to trigger the notification (e.g., 5 seconds from now)
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 5);
-
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
     }
 }
