@@ -110,6 +110,7 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                                             public void onComplete(@NonNull Task<Void> task)
                                             {
                                                 Toast.makeText(AppointmentActivity.this, "The appointment was successfully made!", Toast.LENGTH_SHORT).show();
+                                                Helper.addEventToCalendar(AppointmentActivity.this, appointments.get(position).getTime(), barber);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -118,7 +119,6 @@ public class AppointmentActivity extends AppCompatActivity implements IRecyclerV
                                                 Toast.makeText(AppointmentActivity.this, "Appointment declined, contact support", Toast.LENGTH_SHORT).show();
                                             }
                                         });
-
                         startActivity(intent);
                         finish();
                     }

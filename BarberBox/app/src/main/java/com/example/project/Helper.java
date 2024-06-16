@@ -1,12 +1,14 @@
 package com.example.project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Environment;
+import android.provider.CalendarContract;
 
 import com.example.project.Domain.Appointment;
 import com.example.project.Domain.Barber;
@@ -18,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +51,34 @@ public class Helper {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
         }
     }*/
+
+    public static void addEventToCalendar(Context context, Timestamp timestamp, Barber barber)
+    {
+        // Convert Firebase Timestamp to Date
+        Date date = timestamp.toDate();
+
+        // Use Calendar to set the event time
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.setTime(date);
+
+        // Assuming the event is 1 hour long
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(date);
+        endTime.add(Calendar.HOUR, 1);
+
+        // Create an intent and put extra data for the event
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(CalendarContract.Events.TITLE, "Barber Appointment at " + barber.getName())
+                .putExtra(CalendarContract.Events.DESCRIPTION, "This is a barber appointment at " + barber.getName())
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, Helper.getAddressFromGeoPoint(barber.getLocation(), context))
+                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+
+        // Start the activity with the intent
+        context.startActivity(intent);
+    }
 
 
     /*public static void openLocationInGoogleMaps(double latitude, double longitude) {
